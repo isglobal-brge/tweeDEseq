@@ -1,0 +1,313 @@
+%\VignetteIndexEntry{tweeDEseq: analysis of RNA-seq data using the Poisson-Tweedie family of distributions}
+%\VignetteKeywords{RNA-seq, differential expression, Poisson-Tweedie}
+%\VignettePackage{tweeDEseq}
+\documentclass{article}
+\usepackage{url}
+\usepackage{times}
+\usepackage{mathptmx}
+\usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
+\usepackage{natbib}
+\usepackage[font=sf, labelfont=bf, labelsep=period, position=top]{caption}
+
+\newcommand{\Robject}[1]{\texttt{#1}}
+\newcommand{\Rfunction}[1]{{\small\texttt{#1}}}
+\newcommand{\Rpackage}[1]{\textsf{#1}}
+\newcommand{\Rclass}[1]{\textit{#1}}
+\newcommand{\R}{\textsf{R}}
+\newcommand{\tweeDEseq}{\textsf{tweeDEseq}}
+
+\title{\textbf{tweeDEseq}: analysis of RNA-seq data using the Poisson-Tweedie
+       family of distributions}
+
+
+\author{
+Mikel Esnaola$^{1}$\\
+\texttt{mesnaola@creal.cat}
+\and
+Robert Castelo$^{2,3}$\\
+\texttt{robert.castelo@upf.edu}
+\and
+Juan Ram\'on Gonz\'alez$^{1,2,3}$\\
+\texttt{jrgonzalez@creal.cat}
+}
+
+\begin{document}
+
+\SweaveOpts{eps=FALSE}
+
+\maketitle
+
+\noindent
+{\scriptsize
+$^{1}$Centre for Research in Environmental Epidemiology (CREAL), Barcelona, Spain \\
+\url{http://www.creal.cat/jrgonzalez/software.htm} \\
+$^{2}$Dept. of Experimental and Health Sciences, Research Program on Biomedical Informatics (GRIB), \\
+Universitat Pompeu Fabra, Barcelona, Spain \\
+$^{3}$Hospital del Mar Research Institute (IMIM), Barcelona, Spain
+}
+
+\section{Getting started}
+
+This document gives an overview of the \R~package \tweeDEseq, which provides statistical procedures for testing differential expression in RNA-seq count data. In fact, these procedures could be applied, in principle, to any kind of count data, other than RNA-seq.  The \tweeDEseq~package offers a function for normalizing count data which actually calls other functions for that purpose from the \Rpackage{edgeR} package. For this reason, it is necessary to have installed the \Rpackage{edgeR} package as well, although it is not necessary to explicitly load it onto the session. Another package necessary for running this vignette is the \Rpackage{tweeDEseqCountData} package which contains data to illustrate the analyses and which is employed in the article introducing \Rpackage{tweeDEseq} by \cite{EsnPuiGon11}. Therefore, we should start the \R~session with loading these libraries as follows:
+
+<<>>=
+library(tweeDEseq)
+library(tweeDEseqCountData)
+@
+We will start loading into the workspace the data corresponding to the initial table of raw counts of the RNA-seq experiment from \cite{PicMarPai10} on lymphoblastoid cell lines derived from 69 unrelated nigerian individuals as well as a vector of gender labels for each sample matching the sample order in the table of counts:
+
+<<>>=
+data(countsNigerian)
+dim(countsNigerian)
+countsNigerian[1:5, 1:5]
+data(genderNigerian)
+length(genderNigerian)
+head(genderNigerian)
+table(genderNigerian)
+@
+
+\section{Normalization and filtering}
+
+We proceed to normalize this initial table of raw counts in order to try to remove any technical biases that might be affecting the data. The \tweeDEseq~package relies for this purpose on part of the functionality provided by the \Rpackage{edgeR} package (comprising RNA composition adjustment by TMM \citep{RobOsh10} and quantile-to-quantile count adjustment) and offers one function (\Rfunction{normalizeCounts()}) that makes the appropriate calls to \Rpackage{edgeR} to normalize these data.
+
+%% since normalizing this table of counts would take several minutes
+%% we have to do the following trick to keep the package build within
+%% the checking time constraints of BioC
+<<echo=TRUE, eval=FALSE>>=
+countsNigerianNorm <- normalizeCounts(countsNigerian, genderNigerian)
+@
+<<echo=FALSE, eval=TRUE, results=hide>>=
+data(countsNigerianNorm)
+@
+<<>>=
+dim(countsNigerianNorm)
+@
+If more control is needed in this step, the user should directly employ the corresponding \Rpackage{edgeR} functions. Next, we can filter out genes with very low expression using the function \Rfunction{filterCounts()} whose default parameters remove those genes with less than 5 counts per million in all samples but one.
+
+<<>>=
+countsNigerianNorm <- filterCounts(countsNigerianNorm)
+dim(countsNigerianNorm)
+@
+
+\section{The Poisson-Tweedie family of distributions to model RNA-seq count data}
+
+The package \tweeDEseq~uses the Poisson-Tweedie (PT) family of distributions as the statistical model for count data. PT distributions have been studied by several authors\citep{HouLeeWhi97, GupOng04, PuiVal06, ElSZhuJoe11} and unify several count data distributions (see \textbf{Fig. 1} in El-Shaarawi {\it et al.}, 2011) such as Poisson, negative binomial, Poisson-Inverse Gaussian, P\'olya-Aeppli or Neyman type A. These distributions can model different scenarios as, for instance, a RNA-seq expression profile with a wide dynamic range leading to a heavy tail in the distribution.
+
+Following \cite{ElSZhuJoe11}, let $Y\sim \mbox{PT}(a,b,c)$ be a PT random variable with vector of parameters $\theta=(a, b, c)^T$ defined in the domain
+\begin{equation}
+\Theta=(-\infty, 1] \times (0, +\infty) \times [0, 1)\,.
+\end{equation}
+
+For the sake of interpretability, we reparametrize $\theta=(a,b,c)$ to $\theta=(\mu, \phi, a)$, where $\mu$ denotes the mean, $\phi=\sigma^2/\mu$ is the dispersion index ($\sigma^2$ is the variance), and $a$ the shape parameter that is employed to define some count data distributions that are particular cases of PT such as Poisson or Negative Binomial. The relationship between both parameterizations is the following:
+%
+\begin{equation}
+c=\frac{\phi-1}{\phi-a}, \quad  b=\frac{\mu(1-a)^{(1-a)}}{(\phi-1)(d-a)^{-a}}\,.
+\end{equation}
+
+Under this parametrization, the shape parameter determines the specific count data distribution being employed. For instance $a=1$ corresponds to Poisson and $a=0$ corresponds to negative binomial. We can estimate the parameter vector $\theta$ by maximum likelihood through the function \Rfunction{mlePoissonTweedie()} as follows:
+
+<<>>=
+set.seed(123)
+y <- rnbinom(1000, mu=8, size=1/0.2)
+thetahat <- mlePoissonTweedie(y)
+getParam(thetahat)
+@
+where here we have simulated 1000 random observations from a negative binomial distribution and the last call to \Rfunction{getParam()} allows us to extract the $\hat{\theta}$ vector from the object return by \Rfunction{mlePoissonTweedie()}.
+
+\section{Goodness of fit to a count data distribution}
+
+The PT distribution allows one to test for the goodness of fit to a particular count data distribution defined by a specific value of the PT shape parameter $a$. For this purpose, the function \Rfunction{testShapePT()} allows us to test the goodness of fit to, for instance, the widely used negative binomial distribution (i.e., $H_0:a=0$) as illustrated here with the previously estimated vector $\hat{\theta}$:
+
+<<>>=
+testShapePT(thetahat, a=0)
+@
+These functions are called from another one called \Rfunction{gofTest()} which can perform for us a goodness-of-fit for every gene in the rows of a given matrix of counts, and will return the corresponding $\chi^2_1$ statistics. Since calculating this for the entire gene set would take too long for building quickly this vignette we are going to work on a subset of genes formed by human genes with documented sex-specific expression, a sampled subset of 25 human housekeeping genes and the secretin ({\it SCT}) gene which encodes for an endocrine hormone peptide in chromosome 11 that controls secretions in the duodenum. The gender-related and housekeeping gene lists form part from the previously loaded experimental data package \Rpackage{tweeDEseqCountData} and can be loaded as follows:
+
+<<>>=
+data(genderGenesNigerian)
+data(hkGenesNigerian)
+
+length(XiEgenes)
+length(msYgenes)
+length(hkGenesNigerian)
+@
+The list of genes with documented sex-specific expression was built by first selecting genes in chromosome X that escape X-inactivation \citep{CarWil05} and genes in the male-specific region of the Y chrosomome \citep{SkaKurPag03}, and then filtering out those that do not occur in the initial table of counts with \Sexpr{nrow(countsNigerian)} Ensembl genes. The list of housekeeping genes was retrieved from the literature\citep{EisLev03} and then also filtered to keep only those genes that form part of the initial table of counts. The selection is finally done as follows:
+
+<<>>=
+set.seed(123)
+someHKgenes <- sample(hkGenesNigerian, size=25)
+geneSubset <- unique(c("ENSG00000070031",
+                       intersect(rownames(countsNigerianNorm),
+                                 c(someHKgenes, msYgenes, XiEgenes))))
+length(geneSubset)
+@
+Now, we calculate the goodness of fit to a negative binomial distribution for each of these \Sexpr{length(geneSubset)} genes using the function \Rfunction{gofTest()}:
+
+<<>>=
+chi2gof <- gofTest(countsNigerianNorm[geneSubset, ], a=0)
+@
+and we can examine the result by means of the quantile-quantile plots produced with the function \Rfunction{qqchisq()} and shown in Figure~\ref{fig:gof}, which indicates that about 50\% of the genes show a substantial discrepancy with the respect to the negative binomial distribution.
+
+<<gof, fig=TRUE, include=FALSE, echo=TRUE, results=verbatim, height=7, width=12>>=
+par(mfrow=c(1,2), mar=c(4, 5, 3, 4))
+qq <- qqchisq(chi2gof, main="Chi2 Q-Q Plot")
+qq <- qqchisq(chi2gof, normal=TRUE)
+@
+\begin{figure}[ht]
+\begin{center}
+\begin{tabular}{c}
+\includegraphics[width=\textwidth]{tweeDEseq-gof}
+\end{tabular}
+\end{center}
+\caption{Goodness of fit to a binomial distribution. On the left a quantile-quantile plot of the $\chi^2$ statistic employed to assess the goodness-of-fit of the RNA-seq data to a negative binomial distribution is shown. About 50\% of the genes have expression profiles that depart substantially from the negative binomial distribution. On the right we have the same data but $\chi^2$ statistics are transformed into standard normal z-scores to improve visibility of the lower quantiles.}
+\label{fig:gof}
+\end{figure}
+
+This indicates that different genes may require different count data distributions but, in fact, this can be also observed for different sample groups within the same gene. Figure~\ref{fig:secretin} illustrates such a case with the secretin ({\it SCT}) gene (Ensembl ID ENSG00000070031) when looking separately to male and female samples. This figure is produced with the following code that calls the function \Rfunction{compareCountDist()} which helps in comparing an empirical distribution of counts against the Poisson, the negative binomial and the corresponding estimated PT distribution.
+
+<<secretin, fig=TRUE, include=FALSE, echo=TRUE, results=verbatim, height=7, width=12>>=
+par(mfrow=c(1,2), mar=c(4, 5, 3, 2))
+xf <- unlist(countsNigerianNorm["ENSG00000070031", genderNigerian=="female"])
+compareCountDist(xf, main="Female samples")
+xm <- unlist(countsNigerianNorm["ENSG00000070031", genderNigerian=="male"])
+compareCountDist(xm, main="Male samples")
+@
+\begin{figure}[ht]
+\begin{center}
+\begin{tabular}{c}
+\includegraphics[width=\textwidth]{tweeDEseq-secretin}
+\end{tabular}
+\end{center}
+\caption{Empirical cumulative distribution function (CDF) of counts (black dots), calculated separately from male and female samples, for the secretin gene ({\it SCT}) and estimated CDF (solid lines) of Poisson-Tweedie distributions with shape parameter fixed to $a=1$ corresponding to a Poisson (green), $a=0$ corresponding to a negative binomial (blue) and with the value of $a$ estimated from data too (red). The legend shows the values of the $a$ parameter and the $P$ value of the likelihood ratio test on whether the expression profile follows a negative binomial distribution ($H_0: a=0$). We can observe that for both, male and female samples, the Poisson distribution is not adequate and that the negative binomial distribution is not adequate for female samples.}
+  \label{fig:secretin}
+\end{figure}
+
+What Figure~\ref{fig:secretin} reflects can be also easily seen by just looking to the actual counts and identifying the female sample that produces the heavy tail on the distribution
+
+<<>>=
+sort(xf)
+sort(xm)
+@
+and realize that by just removing that sample, the large overexpression in females just vanishes:
+
+<<>>=
+xf[which.max(xf)]
+2^{log2(mean(xf))-log2(mean(xm))}
+2^{log2(mean(xf[-which.max(xf)])) - log2(mean(xm))}
+@ 
+This illustrates a case in which Poisson and negative binomial distributions may be too restrictive to account for the biological variability that extensively-replicated RNA-seq experiments can reveal in count data.
+
+\section{Testing for differential expression}
+
+In order to illustrate the accuracy of {\tt tweeDEseq} for detecting DE genes in a extensively-replicated RNA-seq experiment we have compared the expression profiles between males and females from the population of 69 unrelated Nigerian individuals\citep{PicMarPai10}.
+
+The \tweeDEseq~package contains a function to test for differential expression between two different conditions using a score based test: the \Rfunction{tweeDE()} function. This function takes as input a matrix of counts with genes on the rows and samples on the columns.
+
+An important feature of the \Rfunction{tweeDE()} function is that it allows to use multiple processors in the computing process. This is done by loading first the \Rpackage{multicore} package and specifying the number of cores to be used with the \Robject{mc.cores} argument in the call to \Rfunction{tweeDE()}.
+
+<<results=hide>>=
+resPT <- tweeDE(countsNigerianNorm[geneSubset, ], group = genderNigerian)
+@
+The function \Rfunction{tweeDE()} returns a \Rclass{data.frame} object of class \Rclass{tweeDE} which can be examined with the \Rfunction{print()}:
+
+<<>>=
+print(resPT)
+@
+which will show us by default the top 6 genes ranked by $P$-value including information on the magnitude of the fold-change in log2 scale (\Robject{log2fc}), overall mean expression in counts (\Robject{overallMean}), mean expression in counts for each sample group, raw $P$-value (\Robject{pval}) and the Benjamini-Hochberg (FDR) adjusted $P$-value (\Robject{pval.adjust}).
+
+The same \Rfunction{print()} function allows us to call differentially expressed a subset of gene meeting cutoffs on the minimum magnitude of the fold-change and maximum FDR and store that subset in a \Rclass{data.frame} object by using the appropriate arguments as follows:
+
+<<>>=
+deGenes <- print(resPT, n=Inf, log2fc=log2(1.5), pval.adjust=0.05, print=FALSE)
+dim(deGenes)
+@
+We can further enrich the output with information like the symbol and description of the gene by using the annotation information stored as a \Rclass{data.frame} in the experimental data package \Rpackage{tweeDEseqCountData} as follows:
+
+<<>>=
+data(annotNigerian)
+head(annotNigerian)
+deGenes <- merge(deGenes, annotNigerian, by="row.names", sort=FALSE)
+@
+and select certain columns to build Table~\ref{tab:deGenes} using the \Rpackage{xtable} package (code not shown but available in the source of the vignette).
+
+<<tabDEgenes, echo=FALSE, results=tex>>=
+library(xtable)
+deGenes$Description <- gsub(" \\[.+$", "", deGenes$Description)
+xtab <- xtable(deGenes[, c("Symbol", "Chr", "log2fc", "pval.adjust", "Description")],
+               caption="Differentially expressed genes between female and male Nigerian individuals found by tweeDEseq.",
+               label="tab:deGenes", align="|l|c|c|r|l|p{7cm}|", digits=c(0, 0, 0, 2, -2, 0))
+print(xtab, floating=TRUE, sanitize.text.function=function(x) x, caption.placement="top", include.rownames=FALSE)
+@
+
+\section{Visualizing the results}
+
+An informative way to visualize the results of a differential expression analysis
+is by means of MA and Volcano plots, which we can easily obtain through the \tweeDEseq~package functions \Rfunction{MAPlot()} and \Rfunction{Vplot()}, respectively as
+follows. Their result is shown in Figure~\ref{fig:MAnVolcano}.
+
+<<>>=
+deGenes <- rownames(print(resPT, n=Inf, log2fc=log2(1.5), pval.adjust=0.05, print=FALSE))
+length(deGenes)
+@
+
+<<MAnVplots, fig=TRUE, include=FALSE, echo=TRUE, results=verbatim, height=7, width=12>>=
+hl <- list(list(genes=msYgenes, pch=21, col="blue", bg="blue", cex=0.7),
+           list(genes=XiEgenes, pch=21, col="skyblue", bg="skyblue", cex=0.7),
+           list(genes=deGenes, pch=1, col="red", lwd=2, cex=1.5)
+          )
+par(mfrow=c(1,2), mar=c(4, 5, 3, 2))
+MAplot(resPT, cex=0.7, log2fc.cutoff=log2(1.5), highlight=hl, main="MA-plot")
+Vplot(resPT, cex=0.7, highlight=hl, log2fc.cutoff=log2(1.5),
+      pval.adjust.cutoff=0.05, main="Volcano plot")
+@
+\begin{figure}[ht]
+\begin{center}
+\begin{tabular}{c}
+\includegraphics[width=\textwidth]{tweeDEseq-MAnVplots}
+\end{tabular}
+\end{center}
+\caption{Differential expression analysis for a subset of genes between male and
+female lymphoblastoid cell lines. On the left a MA-plot shows the magnitude of
+the fold-change of every gene as function of its average normalized expression
+level. No expression-level dependent biases can be observed in the data. On the
+right a volcano plot shows the raw $P$ value of every gene for the null hypothesis
+of no differential expression, calculated by \tweeDEseq, as function of its fold-change.
+In both plots, red circles indicate differentially expressed genes defined by the
+cutoffs depicted with horizontal and vertical dashed lines. Light blue dots denote
+genes from the male-specific region \citep{SkaKurPag03} of chromosome Y (MSY) and
+dark blue dots denote genes from Xi that escape chromosome inactivation (XiE) in
+female samples \citep{CarWil05}.}
+\label{fig:MAnVolcano}
+\end{figure}
+
+\section{Assessing differential expression calling accuracy}
+
+Finally, the accuracy of the differential expression analysis illustrated here can be
+assessed by comparing our list of differentially expressed genes with the list
+of genes with documented sex-specific expression by means of a Fisher's exact test.
+
+<<>>=
+genderGenes <- c(msYgenes[msYgenes %in% rownames(resPT)],
+                 XiEgenes[XiEgenes %in% rownames(resPT)])
+N <- nrow(resPT)
+m <- length(genderGenes)
+n <- length(deGenes)
+k <- length(intersect(deGenes, genderGenes))
+t <- array(c(k,n-k,m-k,N+k-n-m), dim=c(2,2), dimnames=list(SEX=c("in","out"),DE=c("yes","no")))
+t
+fisher.test(t, alternative="greater")
+@
+
+\section{Session info}
+
+<<>>=
+sessionInfo()
+@
+
+\bibliography{tweeDEseq}
+\bibliographystyle{apalike}
+
+\end{document}
