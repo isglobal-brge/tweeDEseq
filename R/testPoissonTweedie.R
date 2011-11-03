@@ -43,19 +43,18 @@ testPoissonTweedie <- function(x, group, saveModel=FALSE, ...){
      if (mod[[1]]$convergence==0 && mod[[2]]$convergence==0)
       {
  #       estad <- abs(mod[[1]]$par[1] - mod[[2]]$par[1])/ sqrt(mod[[1]]$se[1]^2 + mod[[2]]$se[1]^2)
-       num <- abs(log(mod[[1]]$par[1]) - log(mod[[2]]$par[1]))
+       num <- log(mod[[1]]$par[1]) - log(mod[[2]]$par[1])
        den <-  sqrt(mod[[1]]$se[1]^2/mod[[1]]$par[1]^2 + mod[[2]]$se[1]^2/mod[[2]]$par[1]^2)
        estad <- num/den
       }
      else
        estad <- NA
     }
-    pval <- 2*pnorm(estad, lower=FALSE)
+  pval <- 2*pnorm(abs(estad), lower=FALSE)
+    
+  names(pval) <-  "pval"
 
- 
-   names(pval) <-  "pval"
-
-   ans <- list(mean=mm, pvalue=pval)
+  ans <- list(mean=mm, stat=estad, pvalue=pval)
 
    if (saveModel)
     attr(ans, "model") <- mod

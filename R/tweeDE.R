@@ -42,11 +42,11 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
 
         suppressWarnings( mod <- try(testPoissonTweedie(x, g, loglik=FALSE, maxCount=6000, ...), TRUE) )
         if (!inherits(mod, "try-error")) {
-          ans <- c(mod$mean, mod$pval)
+          ans <- c(mod$mean, mod$stat, mod$pval)
         }
         else {
           mm <- aggregate(x, by=list(g), FUN=mean) 
-          ans <- c(unlist(mm[,2]), NA)
+          ans <- c(unlist(mm[,2]), NA, NA)
         }
         ans
       }
@@ -62,11 +62,11 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
         suppressWarnings( mod <- try(testPoissonTweedie(x, g, loglik=FALSE, maxCount=6000, ...), TRUE) )
         
         if (!inherits(mod, "try-error")) {
-          ans <- c(mod$mean, mod$pval)
+          ans <- c(mod$mean, mod$stat, mod$pval)
         }
         else {
           mm <- aggregate(x, by=list(g), FUN=mean) 
-          ans <- c(unlist(mm[,2]), NA)
+          ans <- c(unlist(mm[,2]), NA, NA)
         }
         ans
       }
@@ -103,7 +103,7 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
     close(pb)
     colnames(res)[1:2] <- groups
     
-    pval.bh <- p.adjust(res[,3], "BH")
+    pval.bh <- p.adjust(res[,4], "BH")
     if(identical(pair, groups))
        pair.ind <- 2:1
     else
@@ -111,7 +111,9 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
     
     log2fc <- log2(res[,pair.ind[1]]/res[,pair.ind[2]])
 
-    ans <- data.frame(overallMean=round(rowMeans(x),3), round(res[,1:2],3), log2fc=log2fc, pval=res[,3], pval.adjust=pval.bh) 
+    ans <- data.frame(overallMean=round(rowMeans(x),3),
+                      round(res[,1:2],3), log2fc=log2fc, stat=res[,3], pval=res[,4],
+                      pval.adjust=pval.bh)
  
     class(ans) <- c("tweeDE", "data.frame")
     attr(ans, "comparison") <- paste(as.vector(pair[2]), "-", as.vector(pair[1]))
