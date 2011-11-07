@@ -14,8 +14,12 @@ mlePoissonTweedie <- function (x, a, D.ini, a.ini, maxit = 100, loglik=TRUE, max
         if (missing(D.ini)) 
             p.ini <- c(var(x)/mean(x))
         else p.ini <- c(D.ini)
+
+        if (p.ini[1]<1)
+          p.ini[1] <- 1
+        
         MLE <- optim(p.ini, loglikPoissonTweedie2, x = x, a = a, 
-            method = "L-BFGS-B", mu = mu, lower = c(0), upper = c(Inf), 
+            method = "L-BFGS-B", mu = mu, lower = c(1), upper = c(Inf), 
             control = list(fnscale = -1, maxit = maxit), hessian = TRUE, 
             ...)
         p <- MLE$par
@@ -29,8 +33,12 @@ mlePoissonTweedie <- function (x, a, D.ini, a.ini, maxit = 100, loglik=TRUE, max
             if (missing(D.ini) || missing(a.ini))
                 p.ini <- c(var(x)/mean(x), 0)
             else p.ini <- c(D.ini, a.ini)
+
+            if (p.ini[1]<1)
+              p.ini[1] <- 1
+
             MLE <- try(optim(p.ini, loglikPoissonTweedie, x = x,
-                method = "L-BFGS-B", mu = mu, lower = c(0, -Inf),
+                method = "L-BFGS-B", mu = mu, lower = c(1, -Inf),
                 upper = c(Inf, 1 - (1e-09)), control = list(fnscale = -1,
                   maxit = maxit), hessian = TRUE, ...), TRUE)
             if (!inherits(MLE, "try-error"))  {
@@ -40,7 +48,7 @@ mlePoissonTweedie <- function (x, a, D.ini, a.ini, maxit = 100, loglik=TRUE, max
             }
             else  {
                 MLE <- optim(p.ini, loglikPoissonTweedie2, x = x,
-                  a = 0, method = "L-BFGS-B", mu = mu, lower = c(0),
+                  a = 0, method = "L-BFGS-B", mu = mu, lower = c(1),
                   upper = c(Inf), control = list(fnscale = -1,
                     maxit = maxit), hessian = TRUE, ...)
 
