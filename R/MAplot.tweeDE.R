@@ -24,5 +24,5 @@ MAplot.tweeDE <- function(x, log2fc.cutoff=0, highlight=NULL, ...)
       do.call("points", args.points)
     }
   }
-  invisible(list(A=A, M=M, args.points=args.points))
+  invisible(ifelse(is.null(highlight),list(A=A, M=M),list(A=A, M=M, args.points=args.points)))
  }
