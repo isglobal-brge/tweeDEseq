@@ -8,7 +8,7 @@ Test the goodness of fit of every row in a matrix of counts
 Function to test the goodness of fit of every row in a matrix of counts
 }
 \usage{
-gofTest(counts, a = 0)
+gofTest(counts, a = 0, mc.cores = 1)
 }
 
 \arguments{
@@ -18,7 +18,13 @@ gofTest(counts, a = 0)
   \item{a}{
     numeric scalar smaller than 1. The function will test whether the
     shape parameter is equal to the introduced 'a' (default is 0).
-}
+  }
+  \item{mc.cores}{
+    number of cpu cores to be used. This option is only
+    available when the 'multicore' package is installed and loaded first.
+    In such a case, if the default value of \code{mc.cores=1} is not changed,
+    all available cores will be used.
+  }
 }
 \details{
   By default a = 0, and therefore the function tests for every row of the
