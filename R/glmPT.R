@@ -55,6 +55,7 @@ summary.glmPT <- function(object, ...){
     PTCf[,1] <- round(object$par[(d+1):(d+2)],4)
     PTCf[,2] <- round(object$se[(d+1):(d+2)],4)
     print.default(PTCf,quote=FALSE,right=TRUE, ...)
+    invisible(list(model.coef=Cf, pt.coef=PTCf))
   }
   else
     cat("No coefficients\n\n")
