@@ -60,11 +60,11 @@ library(tweeDEseqCountData)
 We will start loading into the workspace the data corresponding to the initial table of raw counts of the RNA-seq experiment from \cite{PicMarPai10} on lymphoblastoid cell lines derived from 69 unrelated nigerian individuals as well as a vector of gender labels for each sample matching the sample order in the table of counts:
 
 <<>>=
-data(countsNigerian)
+data(pickrell)
+countsNigerian <- exprs(pickrell.eset)
 dim(countsNigerian)
 countsNigerian[1:5, 1:5]
-data(genderNigerian)
-length(genderNigerian)
+genderNigerian <- pData(pickrell.eset)[,"gender"]
 head(genderNigerian)
 table(genderNigerian)
 @
@@ -80,7 +80,8 @@ We proceed to normalize this initial table of raw counts in order to try to remo
 countsNigerianNorm <- normalizeCounts(countsNigerian, genderNigerian)
 @
 <<echo=FALSE, eval=TRUE, results=hide>>=
-data(countsNigerianNorm)
+data(pickrellNorm)
+countsNigerianNorm <- exprs(pickrellNorm.eset)
 @
 <<>>=
 dim(countsNigerianNorm)
@@ -127,18 +128,18 @@ testShapePT(thetahat, a=0)
 These functions are called from another one called \Rfunction{gofTest()} which can perform for us a goodness-of-fit for every gene in the rows of a given matrix of counts, and will return the corresponding $\chi^2_1$ statistics. Since calculating this for the entire gene set would take too long for building quickly this vignette we are going to work on a subset of genes formed by human genes with documented sex-specific expression, a sampled subset of 25 human housekeeping genes and the secretin ({\it SCT}) gene which encodes for an endocrine hormone peptide in chromosome 11 that controls secretions in the duodenum. The gender-related and housekeeping gene lists form part from the previously loaded experimental data package \Rpackage{tweeDEseqCountData} and can be loaded as follows:
 
 <<>>=
-data(genderGenesNigerian)
-data(hkGenesNigerian)
+data(genderGenes)
+data(hkGenes)
 
 length(XiEgenes)
 length(msYgenes)
-length(hkGenesNigerian)
+length(hkGenes)
 @
 The list of genes with documented sex-specific expression was built by first selecting genes in chromosome X that escape X-inactivation \citep{CarWil05} and genes in the male-specific region of the Y chrosomome \citep{SkaKurPag03}, and then filtering out those that do not occur in the initial table of counts with \Sexpr{nrow(countsNigerian)} Ensembl genes. The list of housekeeping genes was retrieved from the literature\citep{EisLev03} and then also filtered to keep only those genes that form part of the initial table of counts. The selection is finally done as follows:
 
 <<>>=
 set.seed(123)
-someHKgenes <- sample(hkGenesNigerian, size=25)
+someHKgenes <- sample(hkGenes, size=25)
 geneSubset <- unique(c("ENSG00000070031",
                        intersect(rownames(countsNigerianNorm),
                                  c(someHKgenes, msYgenes, XiEgenes))))
@@ -227,9 +228,9 @@ dim(deGenes)
 We can further enrich the output with information like the symbol and description of the gene by using the annotation information stored as a \Rclass{data.frame} in the experimental data package \Rpackage{tweeDEseqCountData} as follows:
 
 <<>>=
-data(annotNigerian)
-head(annotNigerian)
-deGenes <- merge(deGenes, annotNigerian, by="row.names", sort=FALSE)
+data(annotEnsembl63)
+head(annotEnsembl63)
+deGenes <- merge(deGenes, annotEnsembl63, by="row.names", sort=FALSE)
 @
 and select certain columns to build Table~\ref{tab:deGenes} using the \Rpackage{xtable} package (code not shown but available in the source of the vignette).
 
