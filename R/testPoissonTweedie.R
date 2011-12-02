@@ -3,6 +3,9 @@ testPoissonTweedie <- function(x, group, saveModel=FALSE, ...){
   if (missing(group))
    stop("'group' argument should be provided")
 
+  if (length(x) != length(group))
+    stop("'x' and 'group' must have equal length")
+  
   groups <- unique(group)
   ngroups <- length(groups)
 

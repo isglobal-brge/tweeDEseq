@@ -9,6 +9,9 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
     if (!is.factor(group))
       group <- as.factor(group)
 
+    if (ncol(object) != length(group))
+      stop("'object' must have number of columns equal to the length of 'group'")
+    
     groups <- levels(group)
 
    
