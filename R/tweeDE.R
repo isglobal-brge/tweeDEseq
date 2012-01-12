@@ -104,13 +104,13 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
       res <-t(data.frame(lapply(data, test.i, g = group, nc = 1)))
     
     close(pb)
-    colnames(res)[1:2] <- groups
+    colnames(res)[2:1] <- groups
     
     pval.bh <- p.adjust(res[,4], "BH")
     if(identical(pair, groups))
-       pair.ind <- 2:1
-    else
        pair.ind <- 1:2
+    else
+       pair.ind <- 2:1
     
     log2fc <- log2(res[,pair.ind[1]]/res[,pair.ind[2]])
 
