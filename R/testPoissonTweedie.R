@@ -5,8 +5,11 @@ testPoissonTweedie <- function(x, group, saveModel=FALSE, ...){
 
   if (length(x) != length(group))
     stop("'x' and 'group' must have equal length")
+
+  if(!is.factor(group))
+    group <- as.factor(group)
   
-  groups <- unique(group)
+  groups <- levels(group)
   ngroups <- length(groups)
 
 
