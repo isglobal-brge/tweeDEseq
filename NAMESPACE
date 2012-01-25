@@ -8,6 +8,8 @@ importFrom(edgeR, estimateCommonDisp)
 importFrom(edgeR, estimateTagwiseDisp)
 importFrom(edgeR, equalizeLibSizes)
 importFrom(limma, zscoreGamma)
+importFrom(parallel, mclapply)
+importFrom(parallel, detectCores)
 
 export(
        compareCountDist,

@@ -9,15 +9,15 @@ gofTest <- function(counts, a=0, mc.cores=1) {
     }
     ans
   }
-  haveMulticore <- tweeDEseq:::.isPackageLoaded("multicore")
+#  haveMulticore <- tweeDEseq:::.isPackageLoaded("multicore")
   if (mc.cores > 1){
-    if(!haveMulticore)
-      stop("In order to run calculations in parallel with multiple cores the 'multicore' library should be loaded first")
-    else{
-      mclapp <- get('mclapply', envir=getNamespace('multicore'))
-      countsList <- as.list(as.data.frame(t(counts)))
-      gof <- unlist(mclapp(countsList, ff), use.names=FALSE)
-    }
+                                        #   if(!haveMulticore)
+                                        #     stop("In order to run calculations in parallel with multiple cores the 'multicore' library should be loaded first")
+                                        #   else{
+   # mclapp <- get('mclapply', envir=getNamespace('multicore'))
+    countsList <- as.list(as.data.frame(t(counts)))
+    gof <- unlist(mclapply(countsList, ff), use.names=FALSE)
+                                        #   }
   }
   else
     gof <- apply(counts, 1, ff)

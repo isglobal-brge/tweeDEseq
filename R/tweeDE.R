@@ -56,7 +56,7 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
     
     test.i.mc <- function(x, g, cont, nc, coreID, ...)
       {
-        masterDesc <- get('masterDescriptor', envir=getNamespace('multicore'))
+        #masterDesc <- get('masterDescriptor', envir=getNamespace('multicore'))
         if(masterDesc() == coreID){
           aux <<- aux + 1
           setTxtProgressBar(pb, nc*aux)
@@ -80,23 +80,22 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
     aux <- 0
     pb <- txtProgressBar(min=0,max=ngenes,initial=0,style=3)
 
-    haveMulticore <- tweeDEseq:::.isPackageLoaded("multicore")
-    if (mc.cores > 1 && !haveMulticore)
-      stop("In order to run calculations in parallel with multiple cores the 'multicore' library should be loaded first")
+#    haveMulticore <- tweeDEseq:::.isPackageLoaded("multicore")
+#    if (mc.cores > 1 && !haveMulticore)
+#      stop("In order to run calculations in parallel with multiple cores the 'multicore' library should be loaded first")
     
-    if (haveMulticore) {
+#    if (haveMulticore) {
 
-      mclapp <- get('mclapply', envir=getNamespace('multicore'))
-      detCor <- get('detectCores', envir=getNamespace('multicore'))
-      masterDesc <- get('masterDescriptor', envir=getNamespace('multicore'))
+#      mclapp <- get('mclapply', envir=getNamespace('multicore'))
+#     detCor <- get('detectCores', envir=getNamespace('multicore'))
+    masterDesc <- get('masterDescriptor', envir=getNamespace('parallel'))
 
-      nAvailableCores <- detCor()
-      if (mc.cores == 1)
-        mc.cores <- nAvailableCores
-
-      coreID <- mclapp(as.list(1:mc.cores), function(x) masterDesc(), mc.cores=mc.cores)[[1]]
-      
-      res <- t(data.frame(mclapp(data, test.i.mc, mc.cores = mc.cores, 
+    if(mc.cores > 1){
+      nAvailableCores <- detectCores()
+#      if (mc.cores == 1)
+#        mc.cores <- nAvailableCores
+      coreID <- mclapply(as.list(1:mc.cores), function(x) masterDesc(), mc.cores=mc.cores)[[1]]
+      res <- t(data.frame(mclapply(data, test.i.mc, mc.cores = mc.cores, 
                                  g = group, nc = mc.cores, coreID = coreID)))
       setTxtProgressBar(pb, ngenes)
     }
