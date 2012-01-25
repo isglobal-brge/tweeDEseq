@@ -56,7 +56,7 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
     
     test.i.mc <- function(x, g, cont, nc, coreID, ...)
       {
-        #masterDesc <- get('masterDescriptor', envir=getNamespace('multicore'))
+        masterDesc <- get('masterDescriptor', envir=getNamespace('parallel'))
         if(masterDesc() == coreID){
           aux <<- aux + 1
           setTxtProgressBar(pb, nc*aux)

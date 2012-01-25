@@ -12,7 +12,8 @@ tweeDEglm <- function(formula, counts, data, mc.cores = 1,...){
   countData <- data.frame(t(counts))
   test.i <- function(x, mat, nc, ...){
     if (nc > 1) {
-      if (multicore:::masterDescriptor() == 4) {
+      masterDesc <- get('masterDescriptor', envir=getNamespace('parallel'))
+      if (masterDesc() == 4) {
         aux <<- aux + 1
         setTxtProgressBar(pb, nc * aux)
       }
@@ -30,7 +31,7 @@ tweeDEglm <- function(formula, counts, data, mc.cores = 1,...){
   aux <- 0
   pb <- txtProgressBar(min = 0, max = ngenes, initial = 0,
                        style = 3)
-  if (mc.cores > 1 & require(multicore, quietly = TRUE, warn.conflicts = FALSE)) 
+  if (mc.cores > 1)
     res <- t(data.frame(mclapply(countData, test.i, mat=X, nc = mc.cores, mc.cores=mc.cores, ...)))
   else
     res <- lapply(countData, test.i, mat=X, nc = 1, ...)
