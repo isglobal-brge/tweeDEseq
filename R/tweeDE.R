@@ -1,11 +1,22 @@
-tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
+tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
   {
     x <- object
     totalTime <- proc.time()
 
     if (!is.matrix(object) && !is.data.frame(object))
         stop("'object' must be a matrix or a data.frame")
-      
+    
+    if(!is.null(a)){
+      if(length(a)==1){
+        warning("Assuming all genes have shape parameter a=",a)
+        a <- rep(a, nrow(object))
+      }
+      if(length(a)!=nrow(object))
+        stop("Length of provided 'a' is different from number of genes in 'object'")
+      if(any(a>=1))
+        stop("'a' must be strictly less than 1")
+    }
+    
     if (!is.factor(group))
       group <- as.factor(group)
 
@@ -43,7 +54,7 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
         aux <<- aux + 1
         setTxtProgressBar(pb, nc*aux)
 
-        suppressWarnings( mod <- try(testPoissonTweedie(x, g, loglik=FALSE, maxCount=6000, ...), TRUE) )
+        suppressWarnings( mod <- try(testPoissonTweedie(x, g, loglik=FALSE, a=a, maxCount=6000, ...), TRUE) )
         if (!inherits(mod, "try-error")) {
           ans <- c(mod$mean, mod$stat, mod$pval)
         }
@@ -62,7 +73,7 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, ...)
           setTxtProgressBar(pb, nc*aux)
         }
         
-        suppressWarnings( mod <- try(testPoissonTweedie(x, g, loglik=FALSE, maxCount=6000, ...), TRUE) )
+        suppressWarnings( mod <- try(testPoissonTweedie(x, g, loglik=FALSE, a=a, maxCount=6000, ...), TRUE) )
         
         if (!inherits(mod, "try-error")) {
           ans <- c(mod$mean, mod$stat, mod$pval)

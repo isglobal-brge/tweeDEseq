@@ -13,8 +13,8 @@ Score test for differences between two Poisson-Tweedie groups
 Carry out a score test for differences between two Poisson-Tweedie groups.
 }
 \usage{
-tweeDE(object, group, mc.cores = 1, pair = NULL, \dots)
-testPoissonTweedie(x, group, saveModel = FALSE,  \dots)
+tweeDE(object, group, mc.cores = 1, pair = NULL, a = NULL, \dots)
+testPoissonTweedie(x, group, saveModel = FALSE, a = NULL,  \dots)
 MAplot(x, \dots)
 Vplot(x, \dots)
 \method{print}{tweeDE}(x, n=6L, sort.by="pval", log2fc.cutoff=0, pval.adjust.cutoff=1, print=TRUE, \dots)
@@ -39,6 +39,13 @@ Vplot(x, \dots)
   \item{pair}{
     vector of two elements containing the representants of each of the
     two groups (default is 'NULL').
+  }
+  \item{a}{
+    for 'tweeDE' function, numerical vector with values strictly less than 1. It allows to fix the shape
+    parameter 'a' during differential expression tests for each of the
+    genes (rows of 'object').
+    for 'testPoissonTweedie' function, numeral value strictly less than
+    1 which fixes the shape parameter 'a' for the test.
   }
   \item{n}{
     maximum number of genes printed.
