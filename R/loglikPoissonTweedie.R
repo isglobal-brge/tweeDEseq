@@ -4,7 +4,7 @@
 #
 
 
-loglikPoissonTweedie <- function(p, x, mu, verbose=FALSE, tol=1e-15){
+loglikPoissonTweedie <- function(p, x, mu, verbose=FALSE, tol=1e-15, probs = FALSE){
   x.t <- table(x)
   x.unique <- as.numeric(names(x.t))  
   mm <- max(x.unique)
@@ -31,6 +31,9 @@ loglikPoissonTweedie <- function(p, x, mu, verbose=FALSE, tol=1e-15){
   if (verbose)
    cat("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
 
+  if(probs)
+    attr(loglik, "probs") <- prx[x+1]
+  
   loglik
 }
 
@@ -40,7 +43,7 @@ loglikPoissonTweedie <- function(p, x, mu, verbose=FALSE, tol=1e-15){
 #
 
 
-loglikPoissonTweedie2 <- function(p, a, x, mu, verbose=FALSE, tol=1e-15){
+loglikPoissonTweedie2 <- function(p, a, x, mu, verbose=FALSE, tol=1e-15, probs = FALSE){
 
   x.t <- table(x)
   x.unique <- as.numeric(names(x.t))  
@@ -70,5 +73,8 @@ loglikPoissonTweedie2 <- function(p, a, x, mu, verbose=FALSE, tol=1e-15){
   if (verbose)
    cat("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
 
+  if(probs)
+    attr(loglik, "probs") <- prx[x+1]
+  
   loglik
 }
