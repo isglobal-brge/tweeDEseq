@@ -15,7 +15,10 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
         stop("Length of provided 'a' is different from number of genes in 'object'")
       if(any(a>=1))
         stop("'a' must be strictly less than 1")
+      inputA <- TRUE
     }
+    else
+      inputA <- FALSE
     
     if (!is.factor(group))
       group <- as.factor(group)
@@ -49,8 +52,13 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
 
     cat("Comparing groups:", as.vector(pair[2]), "-", as.vector(pair[1]), "\n")
     
-    test.i <- function(x, g, cont, nc, ...)
+    test.i <- function(x, g, cont, nc, inputA, ...)
       {
+        if(inputA){
+          a <- x[length(x)]
+          x <- x[-length(x)]
+        }
+        
         aux <<- aux + 1
         setTxtProgressBar(pb, nc*aux)
 
@@ -65,8 +73,13 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
         ans
       }
     
-    test.i.mc <- function(x, g, cont, nc, coreID, ...)
+    test.i.mc <- function(x, g, cont, nc, coreID, inputA, ...)
       {
+        if(inputA){
+          a <- x[length(x)]
+          x <- x[-length(x)]
+        }
+        
         masterDesc <- get('masterDescriptor', envir=getNamespace('parallel'))
         if(masterDesc() == coreID){
           aux <<- aux + 1
@@ -84,8 +97,13 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
         }
         ans
       }
+
+    if(!is.null(a))
+      temp <- cbind(x, a)
+    else
+      temp <- x
     
-    data <- data.frame(t(x))
+    data <- data.frame(t(temp))
     ngenes <- nrow(x)
     
     aux <- 0
@@ -99,6 +117,7 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
 
 #      mclapp <- get('mclapply', envir=getNamespace('multicore'))
 #     detCor <- get('detectCores', envir=getNamespace('multicore'))
+
     masterDesc <- get('masterDescriptor', envir=getNamespace('parallel'))
 
     if(mc.cores > 1){
@@ -107,11 +126,11 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
 #        mc.cores <- nAvailableCores
       coreID <- mclapply(as.list(1:mc.cores), function(x) masterDesc(), mc.cores=mc.cores)[[1]]
       res <- t(data.frame(mclapply(data, test.i.mc, mc.cores = mc.cores, 
-                                 g = group, nc = mc.cores, coreID = coreID)))
+                                 g = group, nc = mc.cores, coreID = coreID, inputA = inputA)))
       setTxtProgressBar(pb, ngenes)
     }
     else
-      res <-t(data.frame(lapply(data, test.i, g = group, nc = 1)))
+      res <-t(data.frame(lapply(data, test.i, g = group, nc = 1, inputA = inputA)))
     
     close(pb)
     colnames(res)[1:2] <- groups

@@ -87,6 +87,7 @@ glmPT.fit <- function(X, Y, offset=NULL, allFactors=FALSE, a = NULL, ...){
     mle <- optim(par.ini, loglikGlmPT, X=X, Y=Y, offset=offset, allFactors=allFactors, a=a, method="L-BFGS-B", lower=lower, upper=upper, hessian=TRUE, control = list(fnscale = -1, maxit=1e3))
     mle$ncov <- ncov
   }
+  mle$df <- length(mle$par)
   mle
 }
   
@@ -121,7 +122,7 @@ glmPT <- function(formula, data, offset=NULL, a=NULL, ...)
   mle$fitted.values <- as.numeric(exp(X%*%mle$par[1:ncov]))
   mle$residuals <- Y - mle$fitted.values
   mle$ncov <- ncov - 1
-  mle$df <- length(mle$par)
+#  mle$df <- length(mle$par)
   if(length(mle$par)!=ncov+2){
     mle$par[length(mle$par)+1] <- a
     mle$se[length(mle$se)+1] <- NA
