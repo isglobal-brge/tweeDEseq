@@ -17,16 +17,17 @@ loglikPoissonTweedie <- function(p, x, mu, verbose=FALSE, tol=1e-15, probs = FAL
   b <- (mu*(1-a)^(1-a))/((D-1)*(D-a)^(-a))   
   c <- (D-1)/(D-a)
 
-
-  if(a!=1)
+  if(abs(a)<0.001)
+    prx <- dnbinom(0:mm, mu=mu, size=b)
+  else  if(a<=1-1e-3)
     prx <- .Call("zhuprobs", as.integer(mm), a, b, c, tol)
   else
     prx <- dpois(0:mm, b)
   q <- prx[x.unique+1]
   if(any(q==0) || any(is.na(q)))
-   loglik <- -1e20
+    loglik <- -1e20
   else
-  loglik <- sum(log(q)*x.t)
+    loglik <- sum(log(q)*x.t)
 
   if (verbose)
    cat("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")

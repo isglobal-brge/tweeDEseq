@@ -10,8 +10,9 @@
 \description{Internal tweeDEseq functions}
 
 \usage{
-loglikPoissonTweedie(p, x, mu, verbose = FALSE, tol = 1e-15)
-loglikPoissonTweedie2(p, a, x, mu, verbose = FALSE, tol = 1e-15)
+loglikPoissonTweedie(p, x, mu, verbose = FALSE, tol = 1e-15, probs = FALSE)
+loglikPoissonTweedie2(p, a, x, mu, verbose = FALSE, tol = 1e-15, probs =
+FALSE)
 momentEstimates(x)
 shapeTrend(x)
 }
