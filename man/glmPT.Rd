@@ -109,11 +109,14 @@ glmPT(formula, data, offset = NULL, a = NULL, ...)
 %  
 %}
 \examples{
+counts <- matrix(rPT(n = 1000, a = 0.5, mu = 10, D = 5), ncol = 40)
+g <- factor(rep(c(0,1), 20))
+mod1 <- glmPT(counts[1,]~g)
+mod1
+summary(mod1)
+anova(mod1)
 
-mod <- glmPT(count~as.factor(trx), data=seizure)
-
-mod
-summary(mod)
-anova(mod)
+mod2 <- tweeDEglm(~ g, counts) 
+mod2
 }
 %\keyword{ }
