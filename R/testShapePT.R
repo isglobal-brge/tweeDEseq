@@ -12,7 +12,7 @@ testShapePT <- function (x, a=0){
   }
   else{
     stat <- abs(x$par[3]-a)/x$se[3]
-    pval <- unname(2*pnorm(stat, lower=FALSE))
+    pval <- unname(2*pnorm(stat, lower.tail=FALSE))
   }
   ans <- list(statistic = stat, pvalue = pval)
   ans

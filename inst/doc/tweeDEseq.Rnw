@@ -10,6 +10,7 @@
 \usepackage{color}
 \usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
 \usepackage{natbib}
+\usepackage[utf8]{inputenc}
 \usepackage[font=sf, labelfont=bf, labelsep=period, position=top]{caption}
 
 \newcommand{\Robject}[1]{\texttt{#1}}
@@ -150,12 +151,12 @@ Now, we calculate the goodness of fit to a negative binomial distribution for ea
 <<>>=
 chi2gof <- gofTest(countsNigerianNorm[geneSubset, ], a=0)
 @
-and we can examine the result by means of the quantile-quantile plots produced with the function \Rfunction{qqchisq()} and shown in Figure~\ref{fig:gof}, which indicates that about 50\% of the genes show a substantial discrepancy with the respect to the negative binomial distribution.
+and we can examine the result by means of the quantile-quantile plots produced with the function \Rfunction{qqchisq()} and shown in Figure~\ref{fig:gof}, which indicates that more than a 50\% of the genes show a substantial discrepancy with the respect to the negative binomial distribution.
 
 <<gof, fig=TRUE, include=FALSE, echo=TRUE, results=verbatim, height=7, width=12>>=
 par(mfrow=c(1,2), mar=c(4, 5, 3, 4))
-qq <- qqchisq(chi2gof, main="Chi2 Q-Q Plot")
-qq <- qqchisq(chi2gof, normal=TRUE)
+qq <- qqchisq(chi2gof, main="Chi2 Q-Q Plot", ylim = c(0, 60))
+qq <- qqchisq(chi2gof, normal=TRUE, ylim = c(-5, 7))
 @
 \begin{figure}[ht]
 \begin{center}
@@ -163,7 +164,7 @@ qq <- qqchisq(chi2gof, normal=TRUE)
 \includegraphics[width=\textwidth]{tweeDEseq-gof}
 \end{tabular}
 \end{center}
-\caption{Goodness of fit to a binomial distribution. On the left a quantile-quantile plot of the $\chi^2$ statistic employed to assess the goodness-of-fit of the RNA-seq data to a negative binomial distribution is shown. About 50\% of the genes have expression profiles that depart substantially from the negative binomial distribution. On the right we have the same data but $\chi^2$ statistics are transformed into standard normal z-scores to improve visibility of the lower quantiles.}
+\caption{Goodness of fit to a binomial distribution. On the left a quantile-quantile plot of the $\chi^2$ statistic employed to assess the goodness-of-fit of the RNA-seq data to a negative binomial distribution is shown. More than a 50\% of the genes have expression profiles that depart substantially from the negative binomial distribution. On the right we have the same data but $\chi^2$ statistics are transformed into standard normal z-scores to improve visibility of the lower quantiles.}
 \label{fig:gof}
 \end{figure}
 
@@ -301,6 +302,40 @@ t <- array(c(k,n-k,m-k,N+k-n-m), dim=c(2,2), dimnames=list(SEX=c("in","out"),DE=
 t
 fisher.test(t, alternative="greater")
 @
+
+\section{Fitting generalized linear models (GLM)}
+
+The \tweeDEseq~package also allows to fit generalized linear models for a response variable following the Poisson-Tweedie family of distributions and several covariates. This can be done using the \Rfunction{glmPT()} function. For instance, we can fit a model taking the secretin (\emph{SCT}) gene as response and gender as covariate:
+
+<<>>=
+mod <- glmPT(countsNigerianNorm["ENSG00000070031",] ~ genderNigerian)
+mod
+summary(mod)
+@
+
+The resulting model can also be used to test differential expression. This can be done using the \Rfunction{anova()} method, which tests whether the model is significantly better than the null one.
+
+<<>>=
+anova(mod)
+@
+
+The \Rfunction{tweeDEglm()} allows testing several genes at the same time. This function also allows using multiple processors in the computing process. Following with the example in section 5, we apply it to the same subset of genes and use the gender as covariate:
+
+<<results = hide>>=
+resPTglm <- tweeDEglm( ~ genderNigerian, counts = countsNigerianNorm[geneSubset,])
+@
+
+\Rfunction{tweeDEglm()} returns a \Robject{data.frame} with the \emph{AIC} (Akaike Information Criterion) for the fitted and null models as well as the original and adjusted p-values resulting from the test between both models. In order to visualize the top significant genes we run the following command.
+
+<<>>=
+head(resPTglm[sort(resPTglm$pval.adjust, index.return = TRUE)$ix,])
+@
+
+If we compare this results with those obtained by the \Rfunction{tweeDE()} function we observe that both methods place the same genes at the top of the most significant list. This is not surprising as, though the statistical tests are not identical, the underlying distributional assumptions are the same. In fact, \Rfunction{tweeDEglm()} detects all the genes captured by \Rfunction{tweeDE()}.
+
+\section{Incorporating CQN offsets}
+
+Package \Rpackage{cqn} (\cite{HanIriWu12}, available at Bioconductor) performs conditional quantile normalization in order to remove possibly existing bias arising from differences in GC content or gene lengths. The method returns a series of offsets which can be incorporated into \Rpackage{tweeDEseq} via the \Rfunction{tweeDEglm} or \Rfunction{glmPT} function.
 
 \section{Session info}
 

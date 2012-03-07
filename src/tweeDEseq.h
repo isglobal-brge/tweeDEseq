@@ -8,7 +8,11 @@ double pval(double* x1, double* x2, int n1, int n2);
 int* perm(int* x, int n);
 double ttest(double* x, int* class, SEXP M, int n1, int n2);
 double **logcfactor(int n, double alpha);
+double zhuprobs2(int n, SEXP A, double b, SEXP C, SEXP TOL);
 
 SEXP permtest(SEXP X, SEXP CLASS, SEXP NPERM, SEXP N, SEXP M);
 SEXP nprobs(SEXP N, SEXP ALPHA, SEXP DELTA, SEXP THETA);
 SEXP zhuprobs(SEXP N, SEXP A, SEXP B, SEXP C, SEXP TOL);
+SEXP loglikGlm(SEXP NOBS, SEXP NCOV, SEXP A, SEXP C, SEXP PAR, SEXP X, SEXP Y, 
+	       SEXP TOL, SEXP OFFSET);
+

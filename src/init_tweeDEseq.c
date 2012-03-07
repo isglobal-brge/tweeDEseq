@@ -6,6 +6,7 @@ R_CallMethodDef CallMethods[]  = {
   {"permtest", (DL_FUNC) &permtest, 5}, //permtest_in},        
   {"nprobs", (DL_FUNC) &nprobs, 4},// nprobs_in}, 
   {"zhuprobs", (DL_FUNC) &zhuprobs, 5},// zhuprobs_in}
+  {"loglikGlm", (DL_FUNC) &loglikGlm, 9}, // loglikGlm_in}
   {NULL, NULL, 0}
 };
 

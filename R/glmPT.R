@@ -66,7 +66,10 @@ anova.glmPT <- function(object, modelNull, ...){
     modelNull <- update(object, ~1)
   D <- -2*modelNull$value +2*object$value
   df <- object$df - modelNull$df
-  pval <- pchisq(q = D, df = df, lower.tail = FALSE)
+  if(D>=0)
+    pval <- pchisq(q = D, df = df, lower.tail = FALSE)
+  else
+    pval <- 1
   pval
 }
 
@@ -74,17 +77,17 @@ anova.glmPT <- function(object, modelNull, ...){
 glmPT.fit <- function(X, Y, offset=NULL, allFactors=FALSE, a = NULL, ...){
   ncov <- ncol(X)
   if (is.null(a)){
-    par.ini <- c(1, rep(0,ncov-1), 0.9, 0)
+    par.ini <- c(log(mean(Y)), rep(0,ncov-1), 0.9, 0)
     lower <- c(0,rep(-Inf,ncov-1),1e-5, -Inf)
     upper <- c(rep(Inf,ncov),1 - 1e-3, 1)
-    mle <- optim(par.ini, loglikGlmPT, X=X, Y=Y, offset=offset, allFactors=allFactors, method="L-BFGS-B", lower=lower, upper=upper, hessian=TRUE, control = list(fnscale = -1, maxit=1e3))
+    mle <- tryCatch(optim(par.ini, loglikGlmPT, X=X, Y=Y, offset=offset, allFactors=allFactors, ..., method="L-BFGS-B", lower=lower, upper=upper, hessian=TRUE, control = list(fnscale = -1, maxit=1e3)), warning = function(w) w)
     mle$ncov <- ncov
   }
   else{
-    par.ini <- c(1, rep(0,ncov-1), 0.9)
+    par.ini <- c(log(mean(Y)), rep(0,ncov-1), 0.9)
     lower <- c(0, rep(-Inf,ncov-1), 1e-5)
     upper <- c(rep(Inf,ncov), 1-1e-3)
-    mle <- optim(par.ini, loglikGlmPT, X=X, Y=Y, offset=offset, allFactors=allFactors, a=a, method="L-BFGS-B", lower=lower, upper=upper, hessian=TRUE, control = list(fnscale = -1, maxit=1e3))
+    mle <- tryCatch(optim(par.ini, loglikGlmPT, X=X, Y=Y, offset=offset, allFactors=allFactors, a=a, ..., method="L-BFGS-B", lower=lower, upper=upper, hessian=TRUE, control = list(fnscale = -1, maxit=1e3)), warning = function(w) w)
     mle$ncov <- ncov
   }
   mle$df <- length(mle$par)

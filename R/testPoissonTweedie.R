@@ -63,7 +63,7 @@ testPoissonTweedie <- function(x, group, saveModel=FALSE, a = NULL, ...){
       else
         estad <- NA
     }
-  pval <- 2*pnorm(abs(estad), lower=FALSE)
+  pval <- 2*pnorm(abs(estad), lower.tail=FALSE)
   
   names(pval) <-  "pval"
   

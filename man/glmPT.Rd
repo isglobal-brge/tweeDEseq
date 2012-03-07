@@ -9,7 +9,7 @@ Fit Poisson-Tweedie generalized linear model.
 family of distributions.
 }
 \usage{
-tweeDEglm(formula, counts, data, mc.cores=1, ...)
+tweeDEglm(formula, counts, data, mc.cores = 1, a = NULL, ...)
 glmPT(formula, data, offset = NULL, a = NULL, ...)
 }
 \arguments{
@@ -37,8 +37,9 @@ glmPT(formula, data, offset = NULL, a = NULL, ...)
     be included in the linear predictor during fitting.
   }
   \item{a}{
-    numeric scalar smaller than 1, if specified the PT shape
-    parameter will be fixed.
+    numeric vector (for 'tweeDEglm') or numeric scalar (for 'glmPT') smaller than 1. If specified the PT shape
+    parameter will be fixed. For 'tweeDEglm', if the provided 'a' is a
+    scalar this value will be used for all rows of 'counts' (genes).
   }
   \item{\dots}{
     additional arguments to be passed to the 'optim' 'control'
@@ -108,7 +109,7 @@ glmPT(formula, data, offset = NULL, a = NULL, ...)
 %  
 %}
 \examples{
-data(seizure)
+
 mod <- glmPT(count~as.factor(trx), data=seizure)
 
 mod

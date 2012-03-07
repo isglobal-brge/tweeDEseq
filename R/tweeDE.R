@@ -118,9 +118,11 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
 #      mclapp <- get('mclapply', envir=getNamespace('multicore'))
 #     detCor <- get('detectCores', envir=getNamespace('multicore'))
 
-    masterDesc <- get('masterDescriptor', envir=getNamespace('parallel'))
-
+    masterDesc <- try(get('masterDescriptor', envir=getNamespace('parallel')), TRUE)
+    
     if(mc.cores > 1){
+      if(class(masterDesc) == "try-error")
+        stop("It appears you are trying to use multiple cores from Windows, this is not possible")
       nAvailableCores <- detectCores()
 #      if (mc.cores == 1)
 #        mc.cores <- nAvailableCores

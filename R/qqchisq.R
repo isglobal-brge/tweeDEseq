@@ -1,4 +1,4 @@
-qqchisq <- function(stat, df=1, normal=FALSE, rangeExpected=FALSE, obsQuantiles=c(0.50, 0.75, 0.95), ...) {
+qqchisq <- function(stat, df=1, normal=FALSE, rangeExpected=FALSE, obsQuantiles=c(0.50, 0.75, 0.95), ylim = NULL, ...) {
   stat <- stat[!is.na(stat)]
   expctd <- qchisq(ppoints(length(stat)), df=df)[order(order(stat))]
   obsvd <- stat
@@ -9,17 +9,26 @@ qqchisq <- function(stat, df=1, normal=FALSE, rangeExpected=FALSE, obsQuantiles=
     rng <- range(z)
     if (rangeExpected)
       rng <- range(qnorm(ppoints(length(z))))
-    qq <- qqnorm(z, pch=".", cex=4, xlab="Expected Z",
-                 ylab="Observed Z", ylim=rng, ...)
+    if(is.null(ylim))
+      qq <- qqnorm(z, pch=".", cex=4, xlab="Expected Z",
+                   ylab="Observed Z", ylim=rng, ...)
+    else
+      qq <- qqnorm(z, pch=".", cex=4, xlab="Expected Z",
+                   ylab="Observed Z", ylim=ylim, ...)
     abline(0, 1, lwd=2)
     expctd <- qq$x
     obsvd <- qq$y
-  } else {
+  }
+  else {
     rng <- range(obsvd)
     if (rangeExpected)
       rng <- range(expctd)
-    plot(expctd, obsvd, xlab=expression(paste("Expected ", chi^2)),
-         ylab=expression(paste("Observed ", chi^2)), pch=".", cex=4, ylim=rng, ...)
+    if(is.null(ylim))
+      plot(expctd, obsvd, xlab=expression(paste("Expected ", chi^2)),
+           ylab=expression(paste("Observed ", chi^2)), pch=".", cex=4, ylim=rng, ...)
+    else
+      plot(expctd, obsvd, xlab=expression(paste("Expected ", chi^2)),
+           ylab=expression(paste("Observed ", chi^2)), pch=".", cex=4, ylim=ylim, ...)
     abline(0, 1, lwd=2)
   }
 

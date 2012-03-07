@@ -19,17 +19,17 @@ SEXP zhuprobs(SEXP N, SEXP A, SEXP B, SEXP C, SEXP TOL){
     r[0] = (1-*a)*(*c);
     for(i=1;i<*n;i++)
       r[i] = (*c)*r[i-1]*(i-1+*a)/(i+1);
-
+    
     res[1] = aux*res[0];
-
+    
     for(i=1;i<*n;i++){
       res[i+1] = aux*res[i];
       for(j=1;j<=i;j++)
         res[i+1] += j*r[i-j]*res[j];
       res[i+1] /= (i+1);
       if((res[i+1]<=*tol)&&(res[i+1]<res[i])){
-        nbreak = i;
-        break;
+	nbreak = i;
+	break;
       }
     }
 

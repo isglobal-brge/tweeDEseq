@@ -25,7 +25,7 @@ compareCountDist <- function(x, plot=TRUE, ...) {
   paramPoi <- MASS::fitdistr(x,densfun="Poisson")
   pp3 <- dpois(0:max(x), lambda=paramPoi$estimate[1])
   p <- 1-pchisq(2*(ans1$log - verNB), 1)
-  pNB <- formatC(p, dig=2)
+  pNB <- formatC(p, digits=2)
 
   if (plot) {
     ss <- 0:max(x)

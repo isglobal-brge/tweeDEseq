@@ -1,4 +1,4 @@
-print.mlePT <- function(x, dig=3, ...)
+print.mlePT <- function(x, digits=3, ...)
  {
 
   if(!inherits(x, "mlePT"))
@@ -14,15 +14,15 @@ print.mlePT <- function(x, dig=3, ...)
   cat("Poisson-Tweedie parameter estimates (", x$method, ")", "\n", sep="")
 
   cat("\n")
-  print(out, dig=2)
+  print(out, digits=2)
   cat("Skewness:", round(x$skewness,2))
 
   cat("\n")
   cat("\n Zhu parameterization \n")
-  print(round(x$paramZhu, dig=dig))
+  print(round(x$paramZhu, digits=digits))
 
   cat("\n Hougaard parameterization \n")
-  print(round(x$paramHou, dig=dig))
+  print(round(x$paramHou, digits=digits))
 
   cat("\n log-likelihood:", x$loglik)
   cat("\n number of iterations:", x$iter)  

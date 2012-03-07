@@ -8,35 +8,40 @@ Chi-square quantile-quantile plot
 Make a chi-square quantile-quantile plot.
 }
 \usage{
-qqchisq(stat, df=1, normal=FALSE, rangeExpected=FALSE, obsQuantiles=c(0.50, 0.75, 0.95), ...)
+qqchisq(stat, df=1, normal=FALSE, rangeExpected=FALSE,
+obsQuantiles=c(0.50, 0.75, 0.95), ylim = NULL, ...)
 }
 
 \arguments{
   \item{stat}{
     vector of \eqn{\chi^2} statistics.
-}
+  }
   \item{df}{
     degrees of freedom of \code{stat}.
-}
+  }
   \item{normal}{
     logical; set to \code{TRUE} if the \eqn{\chi^2} statistics in \code{stat}
     should be transform into normal z-scores in order to improve the display
     of lower quantiles. For this purpose, this function uses the
     \code{\link{zscoreGamma}} function from the limma package. Default is set
     to \code{FALSE}.
-}
+  }
   \item{rangeExpected}{
     logical; set to \code{TRUE} if the displayed range of the observed \eqn{\chi^2}
     statistics is restricted to the range of their expected values. Default is
     set to \code{FALSE}.
-}
+  }
   \item{obsQuantiles}{
     observed quantiles to indicate by horizontal dash lines. By default, these
     are set to 50\%, 75\% and 95\%.
-}
+  }
+  \item{ylim}{
+    they y limits of the plot. If 'NULL' (default), these will be
+    obtained from the data.
+  }
   \item{...}{
     further arguments to pass to the \code{\link{plot}} function.
-}
+  }
 }
 \details{
   The main purpose of this function in the \code{tweeDEseq} package is

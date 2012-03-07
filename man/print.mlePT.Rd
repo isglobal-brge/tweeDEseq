@@ -11,7 +11,7 @@ print, extract loglikelihood or compute confidence interval for an
 object of class 'mlePT'.
 }
 \usage{
-\method{print}{mlePT}(x, dig = 3, ...)
+\method{print}{mlePT}(x, digits = 3, ...)
 \method{logLik}{mlePT}(object, ...)
 \method{confint}{mlePT}(object, parm, level = 0.95, ...)
 }
@@ -23,7 +23,7 @@ object of class 'mlePT'.
   \item{object}{
     object of class 'mlePT'.
     }
-  \item{dig}{
+  \item{digits}{
     integer scalar giving the number of digits to be rounded the solution.
   }
   \item{parm}{
