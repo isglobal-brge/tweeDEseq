@@ -11,7 +11,8 @@ Maximum likelihood estimation of the Poisson-Tweedie parameters using
 L-BFGS-B quasi-Newton method.
 }
 \usage{
-mlePoissonTweedie(x, a, D.ini, a.ini, maxit = 100, loglik=TRUE, maxCount=20000, ...)
+mlePoissonTweedie(x, a, D.ini, a.ini, maxit = 100, loglik=TRUE,
+maxCount=20000, w = NULL, ...)
 getParam(object)
 }
 
@@ -36,6 +37,9 @@ getParam(object)
   }
   \item{maxCount}{
     if max(x) > maxCount, then moment method is used to estimate model parameters to reduce computation time. The default is 20000.
+  }
+  \item{w}{
+    vector of weights with length equal to the lenght of 'x'.
   }
   \item{\dots}{additional arguments to be passed to the 'optim'
     'control' options.

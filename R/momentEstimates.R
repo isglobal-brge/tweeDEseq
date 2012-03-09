@@ -1,13 +1,23 @@
-
-momentEstimates <- function(x)
- {
-   mu <- mean(x)
-   d <- var(x)/mean(x)
-   kappa <- kappa3(x)
-   k <- k(d, kappa)
-   a <- (k-2)/(k-1)
-   ans <- c(mu, d, k, a)
-   names(ans) <- c("mu", "D", "k", "a")
+momentEstimates <- function(x, w = NULL){
+   if(is.null(w)){
+     mu <- mean(x)
+     d <- var(x)/mean(x)
+     kappa <- kappa3(x)
+     k <- k(d, kappa)
+     a <- (k-2)/(k-1)
+     ans <- c(mu, d, k, a)
+     names(ans) <- c("mu", "D", "k", "a")
+   }
+   else{
+     if(length(x)!=length(w))
+       stop("'x' and 'w' have different lengths")
+     X <- list(as.numeric(x))
+     Y <- as.numeric(w)
+     p <- 1L
+     n <- as.integer(length(x))
+     ansC <- .Call("momentEstimates_wt_C", X, Y, n, p)
+     ans <- c("mu" = ansC[1], "D" = ansC[3], "k" = ansC[4], "a" = ansC[5])
+   }
    ans
  }
 

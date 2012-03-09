@@ -333,9 +333,16 @@ head(resPTglm[sort(resPTglm$pval.adjust, index.return = TRUE)$ix,])
 
 If we compare this results with those obtained by the \Rfunction{tweeDE()} function we observe that both methods place the same genes at the top of the most significant list. This is not surprising as, though the statistical tests are not identical, the underlying distributional assumptions are the same. In fact, \Rfunction{tweeDEglm()} detects all the genes captured by \Rfunction{tweeDE()}.
 
-\section{Incorporating CQN offsets}
+\subsection{Incorporating CQN offsets}
 
 Package \Rpackage{cqn} (\cite{HanIriWu12}, available at Bioconductor) performs conditional quantile normalization in order to remove possibly existing bias arising from differences in GC content or gene lengths. The method returns a series of offsets which can be incorporated into \Rpackage{tweeDEseq} via the \Rfunction{tweeDEglm} or \Rfunction{glmPT} function.
+
+For instance, suppose the result of the \Rfunction{cqn} normalization is stored in an object called \Robject{cqn.subset}\footnote{For more information about how to normalize RNA-seq count data using the \Rpackage{cqn} package, please refer to the package vignette available at \url{http://www.bioconductor.org/packages/release/bioc/html/cqn.html}}. The normalizing offsets are stored as a matrix at \Robject{cqn.subset\$offset}. They can be incorporated into the model using the 'offset' argument.
+
+<<eval = FALSE>>=
+tweeDEglm(~ genderNigerian, counts = countsNigerianNorm[geneSubset,],
+ offset = cqn.subset$offset)
+@ 
 
 \section{Session info}
 

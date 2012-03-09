@@ -9,7 +9,7 @@ Fit Poisson-Tweedie generalized linear model.
 family of distributions.
 }
 \usage{
-tweeDEglm(formula, counts, data, mc.cores = 1, a = NULL, ...)
+tweeDEglm(formula, counts, data, mc.cores = 1, a = NULL, offset = NULL,  ...)
 glmPT(formula, data, offset = NULL, a = NULL, ...)
 }
 \arguments{

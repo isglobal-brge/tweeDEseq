@@ -1,4 +1,6 @@
-tweeDEglm <- function(formula, counts, data, mc.cores = 1, a = NULL, ...){
+tweeDEglm <- function(formula, counts, data, mc.cores = 1, a = NULL, offset = NULL, ...){
+  if( !is.null(offset) && !all(dim(counts) == dim(offset)) )
+    stop("If provided, 'offset' must have the same dimensions as 'counts'")
   if(is.null(a))
     suppressWarnings(countData <- data.frame(t(counts)))
   else{
@@ -10,6 +12,10 @@ tweeDEglm <- function(formula, counts, data, mc.cores = 1, a = NULL, ...){
       stop("If provided, 'a' must be a numeric vector of length equal to the number of rows of 'counts' (number of genes)")
     suppressWarnings(countData <- data.frame(t(cbind(counts,a))))
   }
+
+  countData <- lapply(as.list(1:ncol(countData)), function(i, counts, offset)
+                      list(countsi = counts[,i], offseti = offset[i,]),
+                      counts = countData, offset = offset)
   cl <- match.call()
   mf <- match.call(expand.dots = FALSE)
   m <- match(c("formula", "data"), names(mf), 0)
@@ -38,6 +44,8 @@ tweeDEglm <- function(formula, counts, data, mc.cores = 1, a = NULL, ...){
       aux <<- aux + 1
       setTxtProgressBar(pb, nc * aux)
     }
+    offseti <- x$offseti
+    x <- x$countsi
     if(length(x)==nrow(mat))
       a <- NULL
     else if(length(x)==nrow(mat)+1){
@@ -48,8 +56,8 @@ tweeDEglm <- function(formula, counts, data, mc.cores = 1, a = NULL, ...){
       stop("Dimension error. Please be sure the provided parameters are correctly specified")
 #    modFull <- tryCatch(glmPT.fit(X=mat, Y=x, a=a, ...), warning = function(w) w)
 #    modNull <- tryCatch(glmPT.fit(X=matrix(rep(1,length(x)),ncol=1), Y=x, a=a, ...), warning = function(w) w)
-    modFull <- glmPT.fit(X=mat, Y=x, a=a, ...)
-    modNull <- glmPT.fit(X=matrix(rep(1,length(x)),ncol=1), Y=x, a=a, ...)
+    modFull <- glmPT.fit(X=mat, Y=x, a=a, offset = offseti, ...)
+    modNull <- glmPT.fit(X=matrix(rep(1,length(x)),ncol=1), Y=x, a=a, offset = offseti, ...)
     if( "warning"%in%class(modFull) && "warning"%in%class(modNull) )
       ans <- c("AICfull" = NA, "AICnull" = NA, "pval" = NA)
     else if ("warning"%in%class(modFull)){
@@ -80,6 +88,7 @@ tweeDEglm <- function(formula, counts, data, mc.cores = 1, a = NULL, ...){
   setTxtProgressBar(pb, ngenes)
   pval.adjust <- p.adjust(temp[,"pval"], "BH")
   res <- data.frame(temp, pval.adjust)
+  rownames(res) <- rownames(counts)
   close(pb)
   res
 }

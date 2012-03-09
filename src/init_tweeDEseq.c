@@ -7,6 +7,7 @@ R_CallMethodDef CallMethods[]  = {
   {"nprobs", (DL_FUNC) &nprobs, 4},// nprobs_in}, 
   {"zhuprobs", (DL_FUNC) &zhuprobs, 5},// zhuprobs_in}
   {"loglikGlm", (DL_FUNC) &loglikGlm, 9}, // loglikGlm_in}
+  {"momentEstimates_wt_C", (DL_FUNC) &momentEstimates_wt_C, 4}, // momentEstimates_wt_C_in}
   {NULL, NULL, 0}
 };
 

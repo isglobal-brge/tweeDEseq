@@ -1,5 +1,5 @@
 mlePoissonTweedie <-
-function (x, a, D.ini, a.ini, maxit = 100, loglik = TRUE, maxCount = 20000, 
+function (x, a, D.ini, a.ini, maxit = 100, loglik = TRUE, maxCount = 20000, w = NULL, 
     ...) 
 {
     x <- as.numeric(x)
@@ -9,7 +9,10 @@ function (x, a, D.ini, a.ini, maxit = 100, loglik = TRUE, maxCount = 20000,
         cat("There are NA's. They have been removed")
         x <- x[!is.na(x)]
     }
-    mu <- mean(x)
+    if(is.null(w))
+      mu <- mean(x)
+    else
+      mu <- weighted.mean(x, w)
     if (max(x) <= maxCount) {
         if (!missing(a)) {
             if (missing(D.ini)) 
@@ -18,7 +21,7 @@ function (x, a, D.ini, a.ini, maxit = 100, loglik = TRUE, maxCount = 20000,
             if (p.ini[1] < 1) 
                 p.ini[1] <- 1
             MLE <- optim(p.ini, loglikPoissonTweedie2, x = x, 
-                a = a, method = "L-BFGS-B", mu = mu, lower = c(1), 
+                a = a, method = "L-BFGS-B", mu = mu, w = w, lower = c(1), 
                 upper = c(Inf), control = list(fnscale = -1, 
                   maxit = maxit), hessian = TRUE, ...)
             p <- MLE$par
@@ -34,7 +37,7 @@ function (x, a, D.ini, a.ini, maxit = 100, loglik = TRUE, maxCount = 20000,
             if (p.ini[1] < 1) 
                 p.ini[1] <- 1
             MLE <- try(optim(p.ini, loglikPoissonTweedie, x = x, 
-                method = "L-BFGS-B", mu = mu, lower = c(1, -Inf), 
+                method = "L-BFGS-B", mu = mu, w = w, lower = c(1, -Inf), 
                 upper = c(Inf, 1 - (1e-09)), control = list(fnscale = -1, 
                   maxit = maxit), hessian = TRUE, ...), TRUE)
             if (!inherits(MLE, "try-error")) {
@@ -44,7 +47,7 @@ function (x, a, D.ini, a.ini, maxit = 100, loglik = TRUE, maxCount = 20000,
             }
             else {
                 MLE <- try(optim(p.ini, loglikPoissonTweedie2, x = x, 
-                  a = 0, method = "L-BFGS-B", mu = mu, lower = c(1), 
+                  a = 0, method = "L-BFGS-B", mu = mu, w = w, lower = c(1), 
                   upper = c(Inf), control = list(fnscale = -1, 
                     maxit = maxit), hessian = TRUE, ...), TRUE)
                 if (!inherits(MLE, "try-error"))
@@ -78,7 +81,7 @@ function (x, a, D.ini, a.ini, maxit = 100, loglik = TRUE, maxCount = 20000,
         message <- MLE$message
         if (convergence != 0) {
             warning(paste("algorithm did not converge:", message))
-            param <- momentEstimates(x)
+            param <- momentEstimates(x, w = w)
             mu <- param[1]
             D <- param[2]
             a <- param[4]
@@ -97,7 +100,7 @@ function (x, a, D.ini, a.ini, maxit = 100, loglik = TRUE, maxCount = 20000,
         method <- "MLE"
     }
     else {
-        param <- momentEstimates(x)
+        param <- momentEstimates(x, w = w)
         mu <- param[1]
         D <- param[2]
         a <- param[4]

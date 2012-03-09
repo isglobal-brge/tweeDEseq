@@ -14,7 +14,7 @@ loglikPoissonTweedie(p, x, mu, verbose = FALSE, tol = 1e-15, probs =
 FALSE, w = NULL)
 loglikPoissonTweedie2(p, a, x, mu, verbose = FALSE, tol = 1e-15, probs =
 FALSE, w = NULL)
-momentEstimates(x)
+momentEstimates(x, w)
 shapeTrend(x)
 }
 
