@@ -74,20 +74,20 @@ anova.glmPT <- function(object, modelNull, ...){
 }
 
 
-glmPT.fit <- function(X, Y, offset=NULL, allFactors=FALSE, a = NULL, ...){
+glmPT.fit <- function(X, Y, offset=NULL, allFactors=FALSE, a = NULL, maxCount = 6000, ...){
   ncov <- ncol(X)
   if (is.null(a)){
     par.ini <- c(log(mean(Y)), rep(0,ncov-1), 0.9, 0)
     lower <- c(0,rep(-Inf,ncov-1),1e-5, -Inf)
     upper <- c(rep(Inf,ncov),1 - 1e-3, 1)
-    mle <- tryCatch(optim(par.ini, loglikGlmPT, X=X, Y=Y, offset=offset, allFactors=allFactors, ..., method="L-BFGS-B", lower=lower, upper=upper, hessian=TRUE, control = list(fnscale = -1, maxit=1e3)), warning = function(w) w)
+    mle <- tryCatch(optim(par.ini, loglikGlmPT, X=X, Y=Y, offset=offset, allFactors=allFactors, maxCount = maxCount, ..., method="L-BFGS-B", lower=lower, upper=upper, hessian=TRUE, control = list(fnscale = -1, maxit=1e3)), warning = function(w) w)
     mle$ncov <- ncov
   }
   else{
     par.ini <- c(log(mean(Y)), rep(0,ncov-1), 0.9)
     lower <- c(0, rep(-Inf,ncov-1), 1e-5)
     upper <- c(rep(Inf,ncov), 1-1e-3)
-    mle <- tryCatch(optim(par.ini, loglikGlmPT, X=X, Y=Y, offset=offset, allFactors=allFactors, a=a, ..., method="L-BFGS-B", lower=lower, upper=upper, hessian=TRUE, control = list(fnscale = -1, maxit=1e3)), warning = function(w) w)
+    mle <- tryCatch(optim(par.ini, loglikGlmPT, X=X, Y=Y, offset=offset, allFactors=allFactors, a=a, maxCount = maxCount, ..., method="L-BFGS-B", lower=lower, upper=upper, hessian=TRUE, control = list(fnscale = -1, maxit=1e3)), warning = function(w) w)
     mle$ncov <- ncov
   }
   mle$df <- length(mle$par)

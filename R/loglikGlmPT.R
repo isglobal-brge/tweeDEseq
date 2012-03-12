@@ -1,4 +1,4 @@
-loglikGlmPT <- function(par, X, Y, offset=NULL, allFactors=FALSE, a=NULL, tol=1e-300, verbose = FALSE){
+loglikGlmPT <- function(par, X, Y, offset=NULL, allFactors=FALSE, a=NULL, tol=1e-300, maxCount, verbose = FALSE){
   ## WHILE IS NOT IMPLEMENTED IN C FOR ALL FACTORS:
   allFactors <- FALSE
 
@@ -48,9 +48,10 @@ loglikGlmPT <- function(par, X, Y, offset=NULL, allFactors=FALSE, a=NULL, tol=1e
     NOBS <- nobs
     NCOV <- ncov
     PAR <- par
+    MAXCOUNT <- as.integer(maxCount)
 
     res <- .Call("loglikGlm", as.integer(NOBS), as.integer(NCOV), A,  C, PAR,
-                 X2, as.integer(Y), 1e-300, OFFSET)
+                 X2, as.integer(Y), 1e-300, OFFSET, MAXCOUNT)
     l <- res
   }
   if(verbose)

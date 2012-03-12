@@ -1,9 +1,9 @@
 #include "tweeDEseq.h"
 
 SEXP loglikGlm(SEXP NOBS, SEXP NCOV, SEXP A, SEXP C, SEXP PAR, SEXP X, SEXP Y, 
-	       SEXP TOL, SEXP OFFSET){
+	       SEXP TOL, SEXP OFFSET, SEXP MAXCOUNT){
   
-  int *nobs = INTEGER(NOBS), *ncov = INTEGER(NCOV), *y = INTEGER(Y);
+  int *nobs = INTEGER(NOBS), *ncov = INTEGER(NCOV), *y = INTEGER(Y), *maxCount = INTEGER(MAXCOUNT);
   double *a = REAL(A), *c = REAL(C), *par = REAL(PAR), *offset = REAL(OFFSET);
 
   int i = 0, j = 0;
@@ -28,13 +28,11 @@ SEXP loglikGlm(SEXP NOBS, SEXP NCOV, SEXP A, SEXP C, SEXP PAR, SEXP X, SEXP Y,
       probs = dnbinom_mu((double)y[i], b, m, 1);
     }
     else if(*a<=0.999){
-      if(y[i]>2000){
-	//	Rprintf("i=%d, %d > 6000\n", i, y[i]);
+      if(y[i]>*maxCount){
 	b = (m * (1-*c))/(*c);
 	probs = dnbinom_mu((double)y[i], b, m, 1);
       }
       else{
-	//	Rprintf("i=%d, %d < 6000\n", i, y[i]);
 	probs = zhuprobs2(y[i], A, b, C, TOL);
 	probs = log(probs);
       }

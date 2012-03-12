@@ -331,7 +331,7 @@ resPTglm <- tweeDEglm( ~ genderNigerian, counts = countsNigerianNorm[geneSubset,
 head(resPTglm[sort(resPTglm$pval.adjust, index.return = TRUE)$ix,])
 @
 
-If we compare this results with those obtained by the \Rfunction{tweeDE()} function we observe that both methods place the same genes at the top of the most significant list. This is not surprising as, though the statistical tests are not identical, the underlying distributional assumptions are the same. In fact, \Rfunction{tweeDEglm()} detects all the genes captured by \Rfunction{tweeDE()}.
+If we compare these results with those obtained by the \Rfunction{tweeDE()} function we observe that both methods place the same genes at the top of the most significant list. This is not surprising as, though the statistical tests are not identical, the underlying distributional assumptions are the same. In fact, \Rfunction{tweeDEglm()} detects all the genes captured by \Rfunction{tweeDE()}.
 
 \subsection{Incorporating CQN offsets}
 
