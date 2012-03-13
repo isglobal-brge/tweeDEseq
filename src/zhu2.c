@@ -27,7 +27,7 @@ SEXP zhuprobs(SEXP N, SEXP A, SEXP B, SEXP C, SEXP TOL){
       for(j=1;j<=i;j++)
         res[i+1] += j*r[i-j]*res[j];
       res[i+1] /= (i+1);
-      if((res[i+1]<=*tol)&&(res[i+1]<res[i])){
+      if((tol>0)&&(res[i+1]<=*tol)&&(res[i+1]<res[i])){
 	nbreak = i;
 	break;
       }

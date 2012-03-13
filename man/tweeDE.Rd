@@ -14,7 +14,7 @@ Carry out a score test for differences between two Poisson-Tweedie groups.
 }
 \usage{
 tweeDE(object, group, mc.cores = 1, pair = NULL, a = NULL, \dots)
-testPoissonTweedie(x, group, saveModel = FALSE, a = NULL,  \dots)
+testPoissonTweedie(x, group, saveModel = FALSE, a = NULL, log = FALSE,  \dots)
 MAplot(x, \dots)
 Vplot(x, \dots)
 \method{print}{tweeDE}(x, n=6L, sort.by="pval", log2fc.cutoff=0, pval.adjust.cutoff=1, print=TRUE, \dots)
@@ -80,6 +80,13 @@ Vplot(x, \dots)
   \item{saveModel}{
     logical indicating whether the results of fitting the model should
     be saved or not (default is 'FALSE').
+  }
+  \item{log}{
+    logical (default is FALSE). If FALSE, the tested Null Hypothesis states that
+    the difference between the means is 0 while, if TRUE, it states that
+    the quotient between the logarithm of means is equal to 1. For
+    this last case, the standard error is computed using the Delta
+    Method.
   }
   \item{\dots}{
     additional arguments.

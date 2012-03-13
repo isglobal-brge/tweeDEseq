@@ -1,4 +1,4 @@
-testPoissonTweedie <- function(x, group, saveModel=FALSE, a = NULL, ...){
+testPoissonTweedie <- function(x, group, saveModel=FALSE, a = NULL, log = FALSE, ...){
   if (missing(group))
     stop("'group' argument should be provided")
   
@@ -53,13 +53,15 @@ testPoissonTweedie <- function(x, group, saveModel=FALSE, a = NULL, ...){
     }
   else
     {
-      if (mod[[1]]$convergence==0 && mod[[2]]$convergence==0)
-        {
-                                        #       estad <- abs(mod[[1]]$par[1] - mod[[2]]$par[1])/ sqrt(mod[[1]]$se[1]^2 + mod[[2]]$se[1]^2)
+      if (mod[[1]]$convergence==0 && mod[[2]]$convergence==0){
+        if(log){
           num <- log(mod[[1]]$par[1]) - log(mod[[2]]$par[1])
           den <-  sqrt(mod[[1]]$se[1]^2/mod[[1]]$par[1]^2 + mod[[2]]$se[1]^2/mod[[2]]$par[1]^2)
           estad <- num/den
         }
+        else
+          estad <- abs(mod[[1]]$par[1] - mod[[2]]$par[1])/ sqrt(mod[[1]]$se[1]^2 + mod[[2]]$se[1]^2)
+      }
       else
         estad <- NA
     }
