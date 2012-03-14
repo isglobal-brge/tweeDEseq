@@ -74,7 +74,7 @@ anova.glmPT <- function(object, modelNull, ...){
 }
 
 
-glmPT.fit <- function(X, Y, offset=NULL, allFactors=FALSE, a = NULL, maxCount = 6000, ...){
+glmPT.fit <- function(X, Y, offset=NULL, allFactors=FALSE, a = NULL, maxCount = 2000, ...){
   ncov <- ncol(X)
   if (is.null(a)){
     par.ini <- c(log(mean(Y)), rep(0,ncov-1), 0.9, 0)
