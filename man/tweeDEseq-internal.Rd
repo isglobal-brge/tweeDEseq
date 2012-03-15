@@ -21,7 +21,7 @@ shapeTrend(x)
 loglikGlmPT(par, X, Y, offset = NULL, allFactors=FALSE, a=NULL,
 tol=1e-300, maxCount, verbose = FALSE)
 glmPT.fit(X, Y, offset=NULL, allFactors=FALSE, a = NULL, maxCount =
-6000, ...)
+2000, ...)
 }
 
 \details{These are not to be called by the user}
