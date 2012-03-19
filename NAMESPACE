@@ -10,6 +10,7 @@ importFrom(edgeR, equalizeLibSizes)
 importFrom(limma, zscoreGamma)
 importFrom(parallel, mclapply)
 importFrom(parallel, detectCores)
+importFrom(cqn, cqn)
 
 export(
        compareCountDist,

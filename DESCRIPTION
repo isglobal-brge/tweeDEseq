@@ -1,9 +1,9 @@
 Package: tweeDEseq
 Type: Package
 Title: RNA-seq data analysis using the Poisson-Tweedie family of distributions
-Version: 1.1.27
+Version: 1.1.28
 Depends: R (>= 2.12.0)
-Imports: MASS, limma, edgeR, parallel
+Imports: MASS, limma, edgeR, parallel, cqn
 Suggests: tweeDEseqCountData, xtable
 Author: Juan R Gonzalez <jrgonzalez@creal.cat> and Mikel Esnaola <mesnaola@creal.cat> (with contributions from Robert Castelo <robert.castelo@upf.edu>)
 Maintainer: Juan R Gonzalez <jrgonzalez@creal.cat>
