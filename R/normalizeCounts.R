@@ -3,7 +3,7 @@
 ## right before differential expression is tested within that function
 
 normalizeCounts <- function(counts, group=rep.int(1,ncol(counts)), method=c("TMM", "cqn"),
-                            common.disp=FALSE, prior.n=1, annot=NULL, lib.sizes=NULL, verbose=TRUE) {
+                            common.disp=FALSE, prior.df=8, annot=NULL, lib.sizes=NULL, verbose=TRUE) {
   method <- match.arg(method)
 
   if (is.null(lib.sizes))
@@ -22,7 +22,7 @@ normalizeCounts <- function(counts, group=rep.int(1,ncol(counts)), method=c("TMM
     if (!common.disp) {
       if (verbose)
         message("Estimating tagwise dispersions.")
-      d <- edgeR::estimateTagwiseDisp(d, prior.n=prior.n)
+      d <- edgeR::estimateTagwiseDisp(d, prior.df=prior.df)
     }
     if (verbose)
       message("Calculating effective library sizes.")

@@ -72,7 +72,7 @@ table(genderNigerian)
 
 \section{Normalization and filtering}
 
-We proceed to normalize this initial table of raw counts in order to try to remove any technical biases that might be affecting the data. The \tweeDEseq~package relies for this purpose on part of the functionality provided by the \Rpackage{edgeR} package (comprising RNA composition adjustment by TMM \citep{RobOsh10} and quantile-to-quantile count adjustment) and offers one function (\Rfunction{normalizeCounts()}) that makes the appropriate calls to \Rpackage{edgeR} to normalize these data.
+We proceed to normalize this initial table of raw counts in order to try to remove any technical biases that might be affecting the data. The \tweeDEseq~package relies for this purpose on part of the functionality provided by the \Rpackage{edgeR} package (comprising RNA composition adjustment by TMM \citep{RobOsh10} and quantile-to-quantile count adjustment \citep{RobSmyRoc07} produced by the \Rfunction{equalizeLibSizes()} from \Rpackage{edgeR}) and offers one function (\Rfunction{normalizeCounts()}) that makes the appropriate calls to \Rpackage{edgeR} to normalize these data.
 
 %% since normalizing this table of counts would take several minutes
 %% we have to do the following trick to keep the package build within
