@@ -13,23 +13,25 @@ importFrom(parallel, detectCores)
 importFrom(cqn, cqn)
 
 export(
-       compareCountDist,
-       testPoissonTweedie,
-       mlePoissonTweedie,
-       dPT,
-       rPT, 
-       testShapePT, 
-       getParam, 
-       normalizeCounts,
-       filterCounts,
-       tweeDE,
-       gofTest,
-       qqchisq,
-       MAplot,
-       Vplot,
-       glmPT,
-       tweeDEglm
-       )
+  compareCountDist,
+  testPoissonTweedie,
+  mlePoissonTweedie,
+  dPT,
+  rPT, 
+  testShapePT, 
+  getParam, 
+  normalizeCounts,
+  filterCounts,
+  tweeDE,
+  gofTest,
+  qqchisq,
+  MAplot,
+  Vplot,
+  glmPT,
+  tweeDEglm,
+  exactTestPT,
+  tweeDExact
+  )
 
 
 S3method(print, mlePT)

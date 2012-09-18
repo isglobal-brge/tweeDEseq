@@ -8,11 +8,11 @@ R_CallMethodDef CallMethods[]  = {
   {"zhuprobs", (DL_FUNC) &zhuprobs, 5},// zhuprobs_in}
   {"loglikGlm", (DL_FUNC) &loglikGlm, 10}, // loglikGlm_in}
   {"momentEstimates_wt_C", (DL_FUNC) &momentEstimates_wt_C, 4}, // momentEstimates_wt_C_in}
+  {"logprobs", (DL_FUNC) &logprobs, 5}, //logprobs}
   {NULL, NULL, 0}
 };
 
 
 void R_init_tweeDEseq(DllInfo *ddl){
-
   R_registerRoutines(ddl, NULL, CallMethods, NULL, NULL);
 }

@@ -1,6 +1,8 @@
 #include <R.h>
 #include<Rinternals.h>
 #include<Rmath.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 double var(double* x, int n);
 double mean(double* x, int n);
@@ -25,3 +27,4 @@ SEXP loglikGlm(SEXP NOBS, SEXP NCOV, SEXP A, SEXP C, SEXP PAR, SEXP X, SEXP Y,
 	       SEXP TOL, SEXP OFFSET, SEXP MAXCOUNT);
 SEXP cov_wt_C(SEXP X, SEXP Y, SEXP N, SEXP P);
 SEXP momentEstimates_wt_C(SEXP X, SEXP Y, SEXP N, SEXP P);
+SEXP logprobs(SEXP N, SEXP ALPHA, SEXP DELTA, SEXP THETA, SEXP TOL);
