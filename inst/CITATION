@@ -1,0 +1,11 @@
+citEntry(
+         entry = "article",
+         title = "A flexible count data model to fit the wide diversity of expression profiles arising from extensively replicated RNA-seq experiments",
+         author = "Mikel Esnaola and Pedro Puig and David Gonzalez and Robert Castelo and Juan R Gonzalez",
+         journal = "BMC Bioinformatics",
+         pages = "254",
+         volume = "14",
+         year = "2013",
+         textVersion = "Esnaola M, Puig P, Gonzalez D, Castelo R and Gonzalez JR (2013). A flexible count data model to fit the wide diversity of expression profiles arising from extensively replicated RNA-seq experiments. BMC Bioinformatics 14: 254"
+)
+

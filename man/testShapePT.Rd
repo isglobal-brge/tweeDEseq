@@ -39,10 +39,9 @@ testShapePT(x, a = 0)
   numeric p-value of the test.
 }
 \references{
-  M. Esnaola, P. Puig, D. Gonzalez, R. Castelo, J.R. Gonzalez.
-  A flexible count data model to fit the wide diversity of expression
-  profiles arising from extensively replicated RNA-seq
-  experiments. Submitted.
+  Esnaola M, Puig P, Gonzalez D, Castelo R and Gonzalez JR (2013). A
+  flexible count data model to fit the wide diversity of expression
+  profiles arising from extensively replicated RNA-seq experiments. BMC Bioinformatics 14: 254
 
   A.H. El-Shaarawi, R. Zhu, H. Joe (2010). Modelling species abundance
   using the Poisson-Tweedie family. Environmetrics 22, pages 152-164.

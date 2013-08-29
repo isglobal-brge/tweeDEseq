@@ -54,10 +54,9 @@ obsQuantiles=c(0.50, 0.75, 0.95), ylim = NULL, ...)
   corresponding to the coordinates of the plotted statistics.
 }
 \references{
-  M. Esnaola, P. Puig, D. Gonzalez, R. Castelo, J.R. Gonzalez.
-  A flexible count data model to fit the wide diversity of expression
-  profiles arising from extensively replicated RNA-seq
-  experiments. Submitted.
+  Esnaola M, Puig P, Gonzalez D, Castelo R and Gonzalez JR (2013). A
+  flexible count data model to fit the wide diversity of expression
+  profiles arising from extensively replicated RNA-seq experiments. BMC Bioinformatics 14: 254
 }
 
 \seealso{

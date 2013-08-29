@@ -46,9 +46,7 @@ glmPT(formula, data, offset = NULL, a = NULL, ...)
     options.
   }
 }
-%\details{
-  
-%}
+
 \value{
   An object of class 'glmPT' containing the following information:
   \item{call}{
@@ -105,9 +103,6 @@ glmPT(formula, data, offset = NULL, a = NULL, ...)
   Mikel Esnaola <mesnaola@creal.cat>
 }
 
-%\seealso{
-%  
-%}
 \examples{
 counts <- matrix(rPT(n = 1000, a = 0.5, mu = 10, D = 5), ncol = 40)
 g <- factor(rep(c(0,1), 20))
@@ -119,4 +114,3 @@ anova(mod1)
 mod2 <- tweeDEglm(~ g, counts) 
 mod2
 }
-%\keyword{ }

@@ -20,7 +20,7 @@ normalizeCounts(counts, group=rep.int(1,ncol(counts)), method=c("TMM", "cqn"),
   \item{group}{
     vector giving the experimental group/condition for each
     sample/library. This argument is only relevant
-    when \code{method="TMM"}.
+    when \code{method="cqn"}.
   }
   \item{method}{
     specific method to use in order to normalize the input matrix of counts. By default

@@ -64,17 +64,12 @@ exactTestPT(counts, group, tol = 1e-15, threshold = 150e3)
   - In the last (fifth) column the method that was used to compute the p-value.
 }
 \references{
-  M. Esnaola, P. Puig, D. Gonzalez, R. Castelo, J.R. Gonzalez.  A
-  flexible count data model to fit the wide diversity of expression
-  profiles arising from extensively replicated RNA-seq experiments.
-  Submitted.
-
   P. Hougaard, M.L. Ting Lee, and G.A. Whitmore (1997). Analysis of
   overdispersed count data by mixtures of poisson variables and
   poisson processes. Biometrics 53, pages 1225-1238.
 }
 \author{
-  Mikel Esnaola and J.R. Gonzalez
+  Mikel Esnaola
 }
 
 \seealso{
