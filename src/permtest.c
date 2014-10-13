@@ -40,6 +40,7 @@ double pval(double* x1, double* x2, int n1, int n2){
    res = tstat;
   else
    res = -tstat; 
+  return res;
 }
 
 //RANDOM PERMUTATION OF VECTOR x
