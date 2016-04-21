@@ -38,7 +38,7 @@ normalizeCounts <- function(counts, group=rep.int(1,ncol(counts)), method=c("TMM
         message("Adjusting counts to effective library sizes using tagwise dispersions.")
     }
     dispersion <- pmax(dispersion, 1e-06)
-    counts <- ceiling(edgeR::equalizeLibSizes(d2, disp=dispersion)$pseudo-0.5)
+    counts <- ceiling(edgeR::equalizeLibSizes(d2, disp=dispersion)$pseudo.counts-0.5)
   }
 
   if (method == "cqn") {
