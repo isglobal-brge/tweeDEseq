@@ -1,16 +1,23 @@
-useDynLib(tweeDEseq)
-
+useDynLib(tweeDEseq, .registration=TRUE)
+importFrom(Rcpp, evalCpp)
+exportPattern("^[[:alpha:]]+")
 importFrom(MASS, fitdistr)
 importClassesFrom(edgeR, DGEList)
-importFrom(edgeR, DGEList)
-importFrom(edgeR, calcNormFactors)
-importFrom(edgeR, estimateCommonDisp)
-importFrom(edgeR, estimateTagwiseDisp)
-importFrom(edgeR, equalizeLibSizes)
+importFrom(edgeR, DGEList, calcNormFactors, estimateCommonDisp,
+           estimateTagwiseDisp, equalizeLibSizes)
 importFrom(limma, zscoreGamma)
-importFrom(parallel, mclapply)
-importFrom(parallel, detectCores)
+importFrom(parallel, mclapply, detectCores)
 importFrom(cqn, cqn)
+importFrom(grDevices, grey)
+importFrom(graphics, abline, axis, legend, lines, points,
+           text)
+importFrom(stats, AIC, aggregate, approxfun, contrasts,
+           dnbinom, dpois, ecdf, logLik, lowess,
+           model.matrix, model.response, optim, p.adjust,
+           pchisq, pnorm, ppoints, qchisq, qnorm, qqnorm,
+           quantile, runif, symnum, update, var,
+           weighted.mean)
+importFrom(utils, setTxtProgressBar, txtProgressBar)
 
 export(
   compareCountDist,
@@ -32,7 +39,6 @@ export(
   exactTestPT,
   tweeDExact
   )
-
 
 S3method(print, mlePT)
 S3method(logLik, mlePT)

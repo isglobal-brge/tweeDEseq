@@ -13,7 +13,8 @@ tweeDEglm <- function(formula, counts, data, mc.cores = 1, a = NULL, offset = NU
     suppressWarnings(countData <- data.frame(t(cbind(counts,a))))
   }
 
-  countData <- lapply(as.list(1:ncol(countData)), function(i, counts, offset)
+  # countData <- lapply(as.list(1:ncol(countData)), function(i, counts, offset)
+    countData <- lapply(as.list(seq_len(ncol(countData))), function(i, counts, offset)
                       list(countsi = counts[,i], offseti = offset[i,]),
                       counts = countData, offset = offset)
   cl <- match.call()

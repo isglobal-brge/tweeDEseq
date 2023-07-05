@@ -32,7 +32,7 @@ Robert Castelo$^{2,3}$\\
 \texttt{robert.castelo@upf.edu}
 \and
 Juan Ram\'on Gonz\'alez$^{1,2,3}$\\
-\texttt{jrgonzalez@creal.cat}
+\texttt{juanr.gonzalez@isglobal.org}
 }
 
 \begin{document}

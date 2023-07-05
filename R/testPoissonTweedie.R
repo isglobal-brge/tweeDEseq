@@ -25,7 +25,8 @@ testPoissonTweedie <- function(x, group, saveModel=FALSE, a = NULL, log = FALSE,
   
   y <- list() 
   mm <- rep(NA, ngroups)
-  for (i in 1:ngroups)
+  # for (i in 1:ngroups)
+  for (i in seq_len(ngroups))
     {
       y[[i]] <- x[group==groups[i]]
       mm[i] <- mean(y[[i]])
@@ -34,7 +35,8 @@ testPoissonTweedie <- function(x, group, saveModel=FALSE, a = NULL, log = FALSE,
   
   
   mod <- n <- list()
-  for (i in 1:ngroups)
+  # for (i in 1:ngroups)
+  for (i in seq_len(ngroups))
     {
       if (!all(y[[i]]==0)){
         if(is.null(a))
@@ -48,7 +50,8 @@ testPoissonTweedie <- function(x, group, saveModel=FALSE, a = NULL, log = FALSE,
   
   if (any(is.na(mod)))
     {
-      non.all.zero <- c(1:ngroups)[!is.na(mod)]
+      # non.all.zero <- c(1:ngroups)[!is.na(mod)]
+      non.all.zero <- c( seq_len(ngroups))[!is.na(mod)]
       estad <- (mod[[non.all.zero]]$par[1] - 0) / mod[[non.all.zero]]$se[1]
     }
   else

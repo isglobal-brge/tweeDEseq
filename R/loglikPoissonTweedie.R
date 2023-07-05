@@ -35,7 +35,8 @@ loglikPoissonTweedie <- function(p, x, mu, verbose=FALSE, tol=1e-15, probs = FAL
       loglik <- sum(log(q)*w.t)#/sum(w.t)
   }    
   if (verbose)
-   cat("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
+   # cat("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
+      message("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
 
   if(probs)
     attr(loglik, "probs") <- prx[x+1]
@@ -83,7 +84,8 @@ loglikPoissonTweedie2 <- function(p, a, x, mu, verbose=FALSE, tol=1e-15, probs =
       loglik <- sum(log(q)*w.t)#/sum(w.t)
   }    
   if (verbose)
-   cat("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
+   # cat("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
+      message("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
 
   if(probs)
     attr(loglik, "probs") <- prx[x+1]
@@ -125,7 +127,8 @@ loglikPoissonTweedie3 <- function(p, D, x, mu, verbose=FALSE, tol=1e-15, probs =
       loglik <- sum(log(q)*w.t)#/sum(w.t)
   }    
   if (verbose)
-   cat("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
+   # cat("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
+      message("loglik=",loglik,",D=", D,",a=", a,",b=",b,",c=",c,"\n")
 
   if(probs)
     attr(loglik, "probs") <- prx[x+1]

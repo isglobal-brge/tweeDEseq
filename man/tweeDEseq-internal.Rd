@@ -10,7 +10,7 @@
 
 \title{Internal 'tweeDEseq' functions}
 \description{Internal tweeDEseq functions}
-
+\value{void}
 \usage{
 loglikPoissonTweedie(p, x, mu, verbose = FALSE, tol = 1e-15, probs =
 FALSE, w = NULL)
@@ -23,6 +23,6 @@ tol=1e-300, maxCount, verbose = FALSE)
 glmPT.fit(X, Y, offset=NULL, allFactors=FALSE, a = NULL, maxCount =
 2000, ...)
 }
-
+\examples{ message("These are not to be called by the user") }
 \details{These are not to be called by the user}
 \keyword{internal}

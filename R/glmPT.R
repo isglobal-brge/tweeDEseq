@@ -19,7 +19,8 @@ print.glmPT <- function(x, digits = max(3, getOption("digits") - 3), ...){
     coef[d+1] <- paste(c(rep(" ",10),coef[d+1]),collapse="")
     coef[d+2] <- paste(c(rep(" ",10),coef[d+2]),collapse="")
     cat("Coefficients:\n")
-    print.default(format(coef[1:d], digits = digits), print.gap = 2,
+    #..# print.default(format(coef[1:d], digits = digits), print.gap = 2,
+    print.default(format(coef[seq_len(d)], digits = digits), print.gap = 2,
                   quote = FALSE)
     cat("\nPoisson-Tweedie parameters:\n")
     print.default(format(coef[(d+1):length(x$par)], digits = digits),
@@ -35,16 +36,22 @@ summary.glmPT <- function(object, ...){
   if (length(object$par)) {
     cat("Coefficients:\n")
     d <- length(object$par)-2
-    coefs <- object$par[1:d]
-    t <- coefs/object$se[1:d]
+    # coefs <- object$par[1:d]
+    # t <- coefs/object$se[1:d]
+    coefs <- object$par[seq_len(d)]
+    t <- coefs/object$se[seq_len(d)]
     pv <- 1 - pnorm(t)
     signif.stars <- any(pv < 0.1)
     Signif <- symnum(pv, corr = FALSE, na = FALSE,
                      cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                      symbols = c("***", "**", "*", ".", " "))
-    Cf <- array("", dim = c(d,5), dimnames = list(names(object$par)[1:d],c("Estimate","Std.Error","t value","Pr(>|t|)","")))
+    # Cf <- array("", dim = c(d,5), dimnames = list(names(object$par)[1:d],c("Estimate","Std.Error","t value","Pr(>|t|)","")))
+    Cf <- array("", dim = c(d,5), 
+                dimnames = list(names(object$par)[seq_len(d)],
+                            c("Estimate","Std.Error","t value","Pr(>|t|)","")))
     Cf[,1] <- round(coefs,4)
-    Cf[,2] <- round(object$se[1:d],4)
+    # Cf[,2] <- round(object$se[1:d],4)
+    Cf[,2] <- round(object$se[seq_len(d)],4)
     Cf[,3] <- round(t,4)
     Cf[,4] <- format.pval(pv)
     Cf[,5] <- Signif
@@ -111,9 +118,9 @@ glmPT <- function(formula, data, offset=NULL, a=NULL, ...)
   datClass <- attr(mt,"dataClasses")
   covClass <- datClass[2:length(datClass)]
   if(any(covClass!="factor"))
-    allFactors = FALSE
+    allFactors <-  FALSE
   else
-    allFactors = TRUE
+    allFactors <-  TRUE
   mle <- glmPT.fit(X,Y,offset=offset, allFactors=allFactors, a, ...)
   se <- try(sqrt(-diag(solve(mle$hessian))), TRUE)
   if( !inherits(se, "try-error") )
@@ -121,8 +128,9 @@ glmPT <- function(formula, data, offset=NULL, a=NULL, ...)
   else
     mle$se <- rep(NA, nrow(mle$hessian))
   mle$call <- cl
-  mle$contrasts = attr(X, "contrasts")
-  mle$fitted.values <- as.numeric(exp(X%*%mle$par[1:ncov]))
+  mle$contrasts <-  attr(X, "contrasts")
+  # mle$fitted.values <- as.numeric(exp(X%*%mle$par[1:ncov]))
+  mle$fitted.values <- as.numeric(exp(X%*%mle$par[seq_len(ncov)]))
   mle$residuals <- Y - mle$fitted.values
   mle$ncov <- ncov - 1
 #  mle$df <- length(mle$par)

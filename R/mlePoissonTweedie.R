@@ -6,7 +6,8 @@ function (x, a, D.ini, a.ini, maxit = 100, loglik = TRUE, maxCount = 20000, w = 
     if (all(x == 0)) 
         warning("All data are 0's")
     if (any(is.na(x))) {
-        cat("There are NA's. They have been removed")
+        # cat("There are NA's. They have been removed")
+        message("There are NA's. They have been removed")
         x <- x[!is.na(x)]
     }
     if(is.null(w))
@@ -80,7 +81,7 @@ function (x, a, D.ini, a.ini, maxit = 100, loglik = TRUE, maxCount = 20000, w = 
         convergence <- MLE$convergence
         message <- MLE$message
         if (convergence != 0) {
-            warning(paste("algorithm did not converge:", message))
+            warning( "algorithm did not converge: ", message)
             param <- momentEstimates(x, w = w)
             mu <- param[1]
             D <- param[2]
