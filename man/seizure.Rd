@@ -7,6 +7,7 @@ Epileptic seizure counts
 \description{
 Data on seizure counts for 59 epileptics.
 }
+\value{void}
 \usage{data(seizure)}
 \format{
   A data frame with 236 observations on the following 6 variables.

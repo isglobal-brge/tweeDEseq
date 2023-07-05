@@ -24,7 +24,9 @@ print.tweeDE <- function(x, n=6L, sort.by="pval", log2fc.cutoff=0,
     cat(paste(topstr, "genes ranked by", sortstr, "\n"))
     cat(paste("Minimum absolute log2 fold-change of", round(log2fc.cutoff, digits=2), "\n"))
     cat(paste("Maximum adjusted P-value of", pval.adjust.cutoff, "\n"))
-    print.data.frame(as.data.frame(x)[1:min(nrow(x), n), ], ...)
+    # print.data.frame(as.data.frame(x)[1:min(nrow(x), n), ], ...)
+    print.data.frame(as.data.frame(x)[ seq_len(min(nrow(x), n)), ], ...)
   }
-  invisible(as.data.frame(x)[1:min(nrow(x), n), ])
+  # invisible(as.data.frame(x)[1:min(nrow(x), n), ])
+  invisible(as.data.frame(x)[ seq_len(min(nrow(x), n)), ])
  }

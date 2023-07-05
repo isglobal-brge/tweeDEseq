@@ -50,7 +50,8 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
     x <- x[ , this.pair] 
     group <- factor(as.vector(group[this.pair]))
 
-    cat("Comparing groups:", as.vector(pair[2]), "-", as.vector(pair[1]), "\n")
+    # cat("Comparing groups:", as.vector(pair[2]), "-", as.vector(pair[1]), "\n")
+    message("Comparing groups:", as.vector(pair[2]), "-", as.vector(pair[1]), "\n")
     
     test.i <- function(x, g, cont, nc, inputA, ...)
       {
@@ -121,12 +122,14 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
     masterDesc <- try(get('masterDescriptor', envir=getNamespace('parallel')), TRUE)
     
     if(mc.cores > 1){
-      if(class(masterDesc) == "try-error")
+      # if(class(masterDesc) == "try-error")
+      if ( inherits(masterDesc, "try-error") )
         stop("It appears you are trying to use multiple cores from Windows, this is not possible")
       nAvailableCores <- detectCores()
 #      if (mc.cores == 1)
 #        mc.cores <- nAvailableCores
-      coreID <- mclapply(as.list(1:mc.cores), function(x) masterDesc(), mc.cores=mc.cores)[[1]]
+      #..OK..# coreID <- mclapply(as.list(1:mc.cores), function(x) masterDesc(), mc.cores=mc.cores)[[1]]
+      coreID <- mclapply(as.list(seq_len(mc.cores)), function(x) masterDesc(), mc.cores=mc.cores)[[1]]
       res <- t(data.frame(mclapply(data, test.i.mc, mc.cores = mc.cores, 
                                  g = group, nc = mc.cores, coreID = coreID, inputA = inputA)))
       setTxtProgressBar(pb, ngenes)
@@ -135,18 +138,21 @@ tweeDE <- function(object, group, mc.cores=1, pair=NULL, a=NULL, ...)
       res <-t(data.frame(lapply(data, test.i, g = group, nc = 1, inputA = inputA)))
     
     close(pb)
-    colnames(res)[1:2] <- groups
+    # colnames(res)[1:2] <- groups
+    colnames(res)[seq_len(2)] <- groups
     
     pval.bh <- p.adjust(res[,4], "BH")
     if(identical(pair, groups))
        pair.ind <- 2:1
     else
-       pair.ind <- 1:2
+       # pair.ind <- 1:2
+       pair.ind <- seq_len(2)
     
     log2fc <- log2(res[,pair.ind[1]]/res[,pair.ind[2]])
 
     ans <- data.frame(overallMean=round(rowMeans(x),3),
-                      round(res[,1:2],3), log2fc=log2fc, stat=res[,3], pval=res[,4],
+                      # round(res[,1:2],3), log2fc=log2fc, stat=res[,3], pval=res[,4],
+                      round(res[,seq_len(2)],3), log2fc=log2fc, stat=res[,3], pval=res[,4],
                       pval.adjust=pval.bh)
  
     class(ans) <- c("tweeDE", "data.frame")

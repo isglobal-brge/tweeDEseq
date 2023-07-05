@@ -13,14 +13,17 @@ loglikGlmPT <- function(par, X, Y, offset=NULL, allFactors=FALSE, a=NULL, tol=1e
     Xcol <- apply(X,1,paste,collapse="")
     occ <- table(Xcol)
     occI <- as.list(occ)
-    for(i in 1:length(occ))
-      occI[[i]] <- which(Xcol==names(occ[i]))
+    # for(i in 1:length(occ))
+    for(i in seq_len(length(occ)))
+        occI[[i]] <- which(Xcol==names(occ[i]))
     valsChar <- strsplit(names(occ), "")
     vals <- lapply(valsChar, as.integer)
-    for(i in 1:length(vals)){
+    # for(i in 1:length(vals)){
+    for(i in seq_len( length(vals) )){
       occItab <- table(Y[occI[[i]]])
       uniq <- as.integer(names(occItab))
-      m <- exp(vals[[i]]%*%par[1:ncov] + offset[i])
+      # m <- exp(vals[[i]]%*%par[1:ncov] + offset[i])
+      m <- exp(vals[[i]]%*%par[ seq_len(ncov) ] + offset[i])
       b <- (m*(1-c)^(1-a))/c
       if(abs(a)<0.001)
         pUniq <- dnbinom(uniq, mu = m, size = b)
@@ -55,7 +58,7 @@ loglikGlmPT <- function(par, X, Y, offset=NULL, allFactors=FALSE, a=NULL, tol=1e
     l <- res
   }
   if(verbose)
-    cat("loglik=",l,", a=",a,", c=",c,"\n", sep="")
+    message("loglik=",l,", a=",a,", c=",c,"\n", sep="")
 
   l
 }

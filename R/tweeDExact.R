@@ -44,10 +44,12 @@ tweeDExact <- function(counts, group, tol = 1e-15, mc.cores = 1){
   masterDesc <- try(get("masterDescriptor", envir = getNamespace("parallel")), 
                     TRUE)
   if (mc.cores > 1) {
-    if (class(masterDesc) == "try-error") 
+    # if (class(masterDesc) == "try-error") 
+    if ( inherits(masterDesc, "try-error") )
       stop("It appears you are trying to use multiple cores from Windows, this is not possible")
     nAvailableCores <- detectCores()
-    coreID <- mclapply(as.list(1:mc.cores), function(x) masterDesc(), 
+    # coreID <- mclapply(as.list(1:mc.cores), function(x) masterDesc(), 
+    coreID <- mclapply(as.list( seq_len(mc.cores)), function(x) masterDesc(), 
                        mc.cores = mc.cores)[[1]]
     res <- data.frame(mclapply(data, test.i.mc, mc.cores = mc.cores, 
                                group = group, nc = mc.cores, coreID = coreID, tol = tol))

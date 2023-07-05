@@ -20,9 +20,11 @@ Vplot.tweeDE <- function(x, log2fc.cutoff=0, pval.adjust.cutoff=1,
   }
   if (!is.null(highlight)) {
     if (!is.null(names(highlight))) highlight <- list(highlight)
-    for (i in 1:length(highlight)) {
-      if (any(is.na(match(highlight[[i]]$genes, rownames(x)))))
-        warning(paste("Some genes in the", i, "'highlight' argument are not in 'x'"))
+    # for (i in 1:length(highlight)) {
+    for (i in seq_len(length(highlight))) {
+      if (any(is.na(match(highlight[[i]]$genes, rownames(x))))){
+            warning("Some genes in the ", i, "'highlight' argument are not in 'x'")
+       }
       args.points <- list(x=M[highlight[[i]]$genes],
                           y=P[highlight[[i]]$genes])
       args.points[names(highlight[[i]])[-match("genes", names(highlight[[i]]))]] <- highlight[[i]][-match("genes", names(highlight[[i]]))]

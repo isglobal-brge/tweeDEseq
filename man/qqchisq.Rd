@@ -72,7 +72,7 @@ counts <- matrix(rPT(n=2000, a=0.5, mu=10, D=5), nrow=20)
 ## Perform the goodness-of-fit tests for every row in the matrix
 chi2gof <- gofTest(counts)
 
-\dontrun{
+\donttest{
 qqchisq(chi2gof)
 }
 }

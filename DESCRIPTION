@@ -2,18 +2,34 @@ Package: tweeDEseq
 Type: Package
 Title: RNA-seq data analysis using the Poisson-Tweedie family of
         distributions
-Version: 1.46.0
-Depends: R (>= 2.12.0)
-Imports: MASS, limma, edgeR, parallel, cqn
-Suggests: tweeDEseqCountData, xtable
-Author: Juan R Gonzalez <jrgonzalez@creal.cat> and Mikel Esnaola
-        <mesnaola@creal.cat> (with contributions from Robert Castelo
-        <robert.castelo@upf.edu>)
-Maintainer: Juan R Gonzalez <jrgonzalez@creal.cat>
+Authors@R:
+    c(person("Dolors", "Pelegri-Siso", ,"dolors.pelegri@isglobal.org",
+    role = c("aut", "cre"),comment = c(ORCID = "0000-0002-5993-3003")),
+      person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org",
+      role = "aut", comment = c(ORCID = "0000-0003-3267-2146")),
+      person("Mikel", "Esnaola", ,"mesnaola@creal.cat", role = "aut"),
+      person("Robert", "Castelo", ,"robert.castelo@upf.edu", role = "aut"))
 Description: Differential expression analysis of RNA-seq using the
         Poisson-Tweedie family of distributions.
+Version: 1.46.1
+Date: 2023-07-05
+Depends: R (>= 4.3.0)
+Imports: Rcpp (>= 1.0.10),
+         MASS,
+         limma,
+         edgeR,
+         parallel,
+         cqn,
+         grDevices,
+         graphics,
+         stats,
+         utils
+Suggests: tweeDEseqCountData, xtable
+LinkingTo: Rcpp
+Encoding: UTF-8
 License: GPL (>= 2)
 LazyLoad: yes
-URL: http://www.creal.cat/jrgonzalez/software.htm
-biocViews: ImmunoOncology, StatisticalMethod, DifferentialExpression, Sequencing,
-        RNASeq
+URL: https://github.com/isglobal-brge/tweeDEseq/
+BugReports: https://github.com/isglobal-brge/tweeDEseq/issues
+biocViews: ImmunoOncology, StatisticalMethod, DifferentialExpression,
+        Sequencing, RNASeq, DNASeq
