@@ -17,9 +17,13 @@ tweeDE(object, group, mc.cores = 1, pair = NULL, a = NULL, \dots)
 testPoissonTweedie(x, group, saveModel = FALSE, a = NULL, log = FALSE,  \dots)
 MAplot(x, \dots)
 Vplot(x, \dots)
-\method{print}{tweeDE}(x, n=6L, sort.by="pval", log2fc.cutoff=0, pval.adjust.cutoff=1, print=TRUE, \dots)
+\method{print}{tweeDE}(x, n=6L, sort.by="pval",
+                       log2fc.cutoff=0,
+                       pval.adjust.cutoff=1,
+                       print=TRUE, \dots)
 \method{MAplot}{tweeDE}(x, log2fc.cutoff=0, highlight=NULL, \dots)
-\method{Vplot}{tweeDE}(x, log2fc.cutoff=0, pval.adjust.cutoff=1, highlight=NULL, ylab=expression(paste(-log[10], " Raw P-value")), \dots)
+\method{Vplot}{tweeDE}(x, log2fc.cutoff=0, pval.adjust.cutoff=1, highlight=NULL,
+                       ylab=expression(paste(-log[10], " Raw P-value")), \dots)
 }
 
 \arguments{
@@ -41,9 +45,9 @@ Vplot(x, \dots)
     two groups (default is 'NULL').
   }
   \item{a}{
-    for 'tweeDE' function, numerical vector with values strictly less than 1. It allows to fix the shape
-    parameter 'a' during differential expression tests for each of the
-    genes (rows of 'object').
+    for 'tweeDE' function, numerical vector with values strictly less than 1.
+    It allows to fix the shape parameter 'a' during differential expression tests for
+    each of the genes (rows of 'object').
     for 'testPoissonTweedie' function, numeral value strictly less than
     1 which fixes the shape parameter 'a' for the test.
   }
@@ -116,7 +120,8 @@ Vplot(x, \dots)
 \references{
   Esnaola M, Puig P, Gonzalez D, Castelo R and Gonzalez JR (2013). A
   flexible count data model to fit the wide diversity of expression
-  profiles arising from extensively replicated RNA-seq experiments. BMC Bioinformatics 14: 254
+  profiles arising from extensively replicated RNA-seq experiments.
+  BMC Bioinformatics 14: 254
 
   A.H. El-Shaarawi, R. Zhu, H. Joe (2010). Modelling species abundance
   using the Poisson-Tweedie family. Environmetrics 22, pages 152-164.
