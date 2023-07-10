@@ -11,7 +11,7 @@ Authors@R:
       person("Robert", "Castelo", ,"robert.castelo@upf.edu", role = "aut"))
 Description: Differential expression analysis of RNA-seq using the
         Poisson-Tweedie family of distributions.
-Version: 1.46.1
+Version: 1.46.2
 Date: 2023-07-05
 Depends: R (>= 4.3.0)
 Imports: Rcpp (>= 1.0.10),
