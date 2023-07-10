@@ -16,7 +16,7 @@ Description: Differential expression analysis of RNA-seq using the
         family is that, while the Negative Binomial (NB) distribution only allows a
         quadratic mean-variance relationship, the PT distributions generalizes this
         relationship to any orde.
-Version: 1.47.3
+Version: 1.47.4
 Date: 2023-07-05
 Depends: R (>= 4.3.0)
 Imports: Rcpp (>= 1.0.10),
